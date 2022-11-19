@@ -23,6 +23,44 @@ The data set used in this project is of survey responses from individuals with d
 Each row in the data set represents the survey response of an individual working in a data-related career including information on skills, experience, technologies worked with, and demographics.  Since we are interested in developing a predictor for North American Data Science Salaries the data set was subset to only include responses from individuals in Canada and the United States as a proxy for the whole of North America as the bulk of the responses are from these two countries.  
 
 ## Data Analysis Plan
+Based on the primary question we are trying to answer and predict, the dataset was selected as mentioned in the previous sections.
+
+The target prediction will be within the US and Canadian regions thus we will filter out other countries to ensure the analysis to be as precise as possible.
+
+Also analysis need to exclude the factors which are sensitive such as gender, in order to make the analysis as unbiased as possible.
+
+The main features columns to be used for training purposes in the analysis from the dataset are as the following:
+- MainBranch
+- Employment
+- RemoteWork
+- EdLevel
+- YearCode
+- YearCodePro
+- DevType
+- OrgSize
+- Country
+- LanguageHaveWorkedWith
+- DatabaseHaveWorkedWith
+- PlatformHaveWorkedWith
+- WebframeHaveWorkedWith
+- MiscTechHaveWorkedWith
+- ToolTechHaveWorkedWith
+- NEWCollabToolsHaveWorkedWith
+- OpSysProfessional use
+- VersionControlSystem
+- VCInteraction
+- OfficeStackAsyncHaveWorkedWith
+- Age
+- (Ethnicity)
+- WorkExp
+- Icorpm
+
+The feature below is the target the analysis want to predict:
+- CompTotal --> ConvertedCompYearly
+
+The EDA and model selection can be done through JupyterNotebook with required libraries mentioned in the environment yaml file, by filtering the desired features, train-test dataset split, model selection, hyper parameter optimization, final model decision.
+
+The final model should be able to predict salary for new data scientists with an accept margin of error.
 
 ## Exploratory Data Analysis
 
