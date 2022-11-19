@@ -3,10 +3,10 @@
 ## Project Proposal
 
 Contributors:
-* Jonah Hamilton
-* Mike Guron
-* Chen Lin
-* Tanmay Agarwal
+  - Jonah Hamilton
+  - Mike Guron
+  - Chen Lin
+  - Tanmay Agarwal
 
 ## Motivation
 
