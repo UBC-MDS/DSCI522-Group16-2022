@@ -63,6 +63,9 @@ The EDA and model selection can be done through JupyterNotebook with required li
 The final model should be able to predict salary for new data scientists with an accept margin of error.
 
 ## Exploratory Data Analysis
+Since we want to focus on the data points for US and Canada, data scientist/analysis related jobs, we filter the dataset.
+
+Also there are lots of null value, thus will will drop the rows with null values in ConvertedCompYearly, this reduces the size of the dataset but will make the future work easier.
 
 ## Licenses
 
