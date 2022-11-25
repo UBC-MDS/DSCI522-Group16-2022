@@ -3,7 +3,7 @@
 
 """Downloads data zip data from the web to a local filepath as a zipped csv file.
 
-Usage: src/download_data.py --url=<url> --out_file=<out_file> 
+Usage: data_download.py --url=<url> --out_file=<out_file> 
  
 Options:
 --url=<url>                  URL from where to download the dataset (must be in standard zip format)
@@ -11,7 +11,7 @@ Options:
 """
 
 # Example:
-# python src/download_data.py --url='https://info.stackoverflowsolutions.com/rs/719-EMH-566/images/stack-overflow-developer-survey-2022.zip' --out_file='data/raw'
+# python src/data_download.py --url='https://info.stackoverflowsolutions.com/rs/719-EMH-566/images/stack-overflow-developer-survey-2022.zip' --out_file='data/raw'
 
 import os
 from docopt import docopt
