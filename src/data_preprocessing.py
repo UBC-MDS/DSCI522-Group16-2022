@@ -11,7 +11,7 @@ Options:
 """
 
 # Example:
-# python data_preprocessing.py --data_input='../data/raw/survey_results_public.csv' --data_output_path='../data/processed/'
+# python src/data_preprocessing.py --data_input='data/raw/survey_results_public.csv' --data_output_path='data/processed/'
 
 from docopt import docopt
 import numpy as np
@@ -69,16 +69,16 @@ def preprocess_data(data_input, data_output_path):
     """
 
     if(not os.path.exists(data_output_path)):
-        os.mkdir(data_output_path)
+        os.makedirs(os.path.dirname(data_output_path))
 
     # read raw data
-    df_raw = pd.read_csv(data_input)
+    # df_raw = pd.read_csv(data_input)
 
     # filter data 
     # TODO: Add filter steps from Tanmay (plus .query('ConvertedCompYearly < 500000'))
     # TODO: Aave the filter data as '..data/processed/filtered_data.csv'
 
-    df_filtered = pd.read_csv('..data/processed/filtered_data.csv')
+    df_filtered = pd.read_csv('data/processed/filtered_data.csv')
 
     train_df_filtered, test_df_filtered = train_test_split(df_filtered, test_size=0.10, random_state=522)
 
@@ -99,9 +99,6 @@ if __name__ == "__main__":
     data_input = args["--data_input"]
     data_output_path = args["--data_output_path"]
 
-    # raw_data_name = data_input.split('.')[-1]
-
     preprocess_data(data_input, data_output_path)
 
     print("Successfully filter and split raw data into {}".format(data_output_path))
-    main(opt["--url"], opt["--out_file"])
