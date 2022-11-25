@@ -10,14 +10,39 @@ Options:
 --data_output_path=<data_output_path>        file path to store the processed data
 """
 
-# Example:
+# Example: (call in repo root)
 # python src/data_preprocessing.py --data_input='data/raw/survey_results_public.csv' --data_output_path='data/processed/'
 
 from docopt import docopt
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import requests, os
+import os
+
+cols_to_choose = ['MainBranch',
+'Employment',
+'RemoteWork',
+'EdLevel',
+'YearsCode',
+'YearsCodePro',
+'DevType',
+'OrgSize',
+'Country',
+'LanguageHaveWorkedWith',
+'DatabaseHaveWorkedWith',
+'PlatformHaveWorkedWith',
+'WebframeHaveWorkedWith',
+'MiscTechHaveWorkedWith',
+'ToolsTechHaveWorkedWith',
+'NEWCollabToolsHaveWorkedWith',
+'OpSysProfessional use',
+'VersionControlSystem',
+'VCInteraction',
+'OfficeStackAsyncHaveWorkedWith',
+'Age',
+'WorkExp',
+'ICorPM',
+'ConvertedCompYearly']
 
 multianswer_cols = [
 'DevType',
@@ -65,20 +90,25 @@ def preprocess_data(data_input, data_output_path):
     None, just save train.csv and test.csv
 
     Example:
-    preprocess_data('../data/raw/survey_results_public.csv', '../data/processed/')
+    preprocess_data('data/raw/survey_results_public.csv', 'data/processed/')
     """
 
     if(not os.path.exists(data_output_path)):
         os.makedirs(os.path.dirname(data_output_path))
 
     # read raw data
-    # df_raw = pd.read_csv(data_input)
+    df_raw = pd.read_csv(data_input)
 
     # filter data 
-    # TODO: Add filter steps from Tanmay (plus .query('ConvertedCompYearly < 500000'))
-    # TODO: Aave the filter data as '..data/processed/filtered_data.csv'
+    north_america_data = df_raw.query("Country == 'United States of America' or Country == 'Canada'")
+    north_america_data = north_america_data[cols_to_choose]
+    north_america_data= north_america_data.query('ConvertedCompYearly < 500000')
 
-    df_filtered = pd.read_csv('data/processed/filtered_data.csv')
+    # TSave the filter data as 'data/processed/filtered_data.csv'
+    north_america_data.to_csv(data_output_path + 'filtered_data.csv')
+    print("Successfully saved filtered data into {}".format(data_output_path))
+    
+    df_filtered = north_america_data
 
     train_df_filtered, test_df_filtered = train_test_split(df_filtered, test_size=0.10, random_state=522)
 
