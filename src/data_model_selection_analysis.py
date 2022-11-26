@@ -7,49 +7,28 @@ Usage: data_model_selection_analysis.py --data_train=<data_train> --data_test=<d
  
 Options:
 --data_train=<data_train>                    train data used for model selection, hyperparameter tuning and best model training
---data_test=<data_test>                    test data used for best model performance evaluation
---data_output_path=<data_output_path>        file path to store the processed data
+--data_test=<data_test>                      test data used for best model performance evaluation
+--file_out_path=<file_out_path>              file path to store the results on model selection, hyperparameter tuning and best model training
 """
 
 # Example: (call in repo root)
-# python data_model_selection_analysis.py --data_train='data/processed/.csv' --data_test='data/processed/test.csv' --file_out_path='documents/'
+# python src/data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/'
 
 from docopt import docopt
-import numpy as np
 import pandas as pd
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import SelectFromModel
+from sklearn.linear_model import Ridge
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.dummy import DummyRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import Lasso
+from sklearn.model_selection import cross_val_score, cross_validate
 import os
-
-cols_to_choose = [
-    'MainBranch',
-    'Employment',
-    'RemoteWork',
-    'EdLevel',
-    'YearsCode',
-    'YearsCodePro',
-    'DevType',
-    'OrgSize',
-    'Country',
-    'LanguageHaveWorkedWith',
-    'DatabaseHaveWorkedWith',
-    'PlatformHaveWorkedWith',
-    'WebframeHaveWorkedWith',
-    'MiscTechHaveWorkedWith',
-    'ToolsTechHaveWorkedWith',
-    'NEWCollabToolsHaveWorkedWith',
-    'OpSysProfessional use',
-    'VersionControlSystem',
-    'VCInteraction',
-    'OfficeStackAsyncHaveWorkedWith',
-    'Age',
-    'WorkExp',
-    'ICorPM',
-    'ConvertedCompYearly']
 
 # order for ordinal columns
 education_order = [
@@ -98,7 +77,7 @@ multianswer_cols = [
     'OfficeStackAsyncHaveWorkedWith',
     'Employment']
 
-passthrough_cols = ['ConvertedCompYearly']
+# passthrough_cols = ['ConvertedCompYearly']
 
 drop_cols = ['ICorPM']
 
@@ -133,61 +112,88 @@ def get_column_names_from_preporcessor(preprocessor):
             name = multianswer_cols[i-1] + "_" + name
             transformed_column_names.append(name)
 
-    transformed_column_names.append('ConvertedCompYearly')
+    # transformed_column_names.append('ConvertedCompYearly')
     # print(transformed_column_names)
 
     return transformed_column_names
 
+def corss_validate_result(model_name, model_type, preprocessor, cross_val_results_reg, X_train, y_train, score_types_reg):
+    pipe = make_pipeline(
+        preprocessor,
+        model_type
+    )
+    cross_val_results_reg[model_name] = pd.DataFrame(cross_validate(pipe,
+                                                                    X_train,
+                                                                    y_train, 
+                                                                    return_train_score=True, 
+                                                                    scoring=list(score_types_reg.values()))).agg(['mean', 'std']).round(3).T
 
-def preprocess_data(data_input, data_output_path):
+# Referenced from 571 lab 4
+def mean_std_cross_val_scores(model, X_train, y_train, **kwargs):
     """
-    Load the raw data.
-    Filter data and split data into train and test sets.
+    Returns mean and std of cross validation
+
+    Parameters
+    ----------
+    model :
+        scikit-learn model
+    X_train : numpy array or pandas DataFrame
+        X in the training data
+    y_train :
+        y in the training data
+
+    Returns
+    ----------
+        pandas Series with mean scores from cross_validation
+    """
+
+    scores = cross_validate(model, X_train, y_train, **kwargs)
+
+    mean_scores = pd.DataFrame(scores).mean()
+    std_scores = pd.DataFrame(scores).std()
+    out_col = []
+
+    for i in range(len(mean_scores)):
+        out_col.append((f"%0.3f (+/- %0.3f)" % (mean_scores[i], std_scores[i])))
+
+    return pd.Series(data=out_col, index=mean_scores.index)
+
+def model_selection_analysis(data_train, data_test, file_out_path):
+    """
+    Load the train and test data.
+    Perform model selection analysis, hyperparameter tuning and best model training
     
     Parameters:
-    data_input: raw data with its file path
-    data_output_path:  file path where to store the preprocessed data
+    data_train: train data used for model selection, hyperparameter tuning and best model training
+    data_test: test data used for best model performance evaluation
+    file_out_path:  file path to store the results on model selection, hyperparameter tuning and best model training
     
     Returns:
-    None, just save train.csv and test.csv
+    None, just save related file from model selection, hyperparameter tuning and best model training
 
     Example:
-    preprocess_data('data/raw/survey_results_public.csv', 'data/processed/')
+    model_selection_analysis('data/processed/train.csv', 'data/processed/test.csv', 'documents/')
+    
     """
 
-    if(not os.path.exists(data_output_path)):
-        os.makedirs(os.path.dirname(data_output_path))
+    if(not os.path.exists(file_out_path)):
+        os.makedirs(os.path.dirname(file_out_path))
 
     # read raw data
-    df_raw = pd.read_csv(data_input)
-    # print(df_raw.columns)
+    train_df = pd.read_csv(data_train)
+    test_df = pd.read_csv(data_test)
 
-    # filter data 
-    north_america_data = df_raw.query("Country == 'United States of America' or Country == 'Canada'")
-    north_america_data = north_america_data[cols_to_choose]
-    north_america_data= north_america_data.query('ConvertedCompYearly < 500000')
-
-    # TSave the filter data as 'data/processed/filtered_data.csv'
-    north_america_data.to_csv(data_output_path + 'filtered_data.csv', index=False)
-    print("Successfully saved filtered data into {}".format(data_output_path))
-    
-    df_filtered = north_america_data
-    df_filtered = write_na_values_for_cols(df_filtered, multianswer_cols)
-
-    train_df_filtered, test_df_filtered = train_test_split(df_filtered, test_size=0.10, random_state=522)
+    train_df = write_na_values_for_cols(train_df, multianswer_cols)
 
     # converts string year values to float
-    train_df_filtered['YearsCode'] = train_df_filtered['YearsCode'].apply(lambda x: convert2float(x))
-    train_df_filtered['YearsCodePro'] = train_df_filtered['YearsCodePro'].apply(lambda x: convert2float(x))
+    train_df['YearsCode'] = train_df['YearsCode'].apply(lambda x: convert2float(x))
+    train_df['YearsCodePro'] = train_df['YearsCodePro'].apply(lambda x: convert2float(x))
 
-    test_df_filtered['YearsCode'] = test_df_filtered['YearsCode'].apply(lambda x: convert2float(x))
-    test_df_filtered['YearsCodePro'] = test_df_filtered['YearsCodePro'].apply(lambda x: convert2float(x))
+    X_train = train_df.drop(columns=["ConvertedCompYearly"])
+    y_train = train_df["ConvertedCompYearly"]
 
-    # train_df_filtered = write_na_values_for_cols(train_df_filtered, multianswer_cols)
-    # test_df_filtered = write_na_values_for_cols(test_df_filtered, multianswer_cols)
-
-    train_df_filtered.to_csv(data_output_path + 'train.csv', index=False)
-    test_df_filtered.to_csv(data_output_path + 'test.csv', index=False)
+    X_test = test_df.drop(columns=["ConvertedCompYearly"])
+    y_test = test_df["ConvertedCompYearly"]
 
     numeric_transformer = make_pipeline(SimpleImputer(strategy='most_frequent'), StandardScaler())
 
@@ -205,7 +211,7 @@ def preprocess_data(data_input, data_output_path):
             (ordinal_age_transformer, ordinal_age),
             (binary_transformer, binary_cols),
             (categorical_transformer, categorical_cols),
-            ('passthrough', passthrough_cols),
+            # ('passthrough', passthrough_cols),
             ('drop', drop_cols),
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[0]),
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[1]),
@@ -222,40 +228,95 @@ def preprocess_data(data_input, data_output_path):
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[12])
     )
 
-    # fit preprocessor with train df
-    train_df_filtered_encode = preprocessor.fit_transform(train_df_filtered).todense()
-
-    # creates list of new column names from preprocessing pipelines for train df
-    transformed_column_names_train = get_column_names_from_preporcessor(preprocessor)
-
     # fit preprocessor with test df
-    test_df_filtered_encode = preprocessor.fit_transform(test_df_filtered).todense()
+    X_train_encode = preprocessor.fit_transform(X_train).todense()
 
     # creates list of new column names from preprocessing pipelines for test df
-    transformed_column_names_test = get_column_names_from_preporcessor(preprocessor)
+    transformed_column_names = get_column_names_from_preporcessor(preprocessor)
     
-
-    train_enc = pd.DataFrame(
-        data=train_df_filtered_encode, 
-        index=train_df_filtered.index, 
-        columns=transformed_column_names_train
+    X_train_enc = pd.DataFrame(
+        data=X_train_encode, 
+        index=X_train.index, 
+        columns=transformed_column_names
     )
 
-    test_enc = pd.DataFrame(
-        data=test_df_filtered_encode, 
-        index=test_df_filtered.index, 
-        columns=transformed_column_names_test
+    print('Successfully make encoded X_train')
+
+    # Feature Selection
+    select_lr = SelectFromModel(Ridge(), threshold="0.8*mean")
+
+    pipe_rf_model_based = make_pipeline(
+        preprocessor, select_lr, RandomForestRegressor(random_state=16)
+    )
+    pipe_rf_model_based.fit(X_train, y_train)
+
+    model_based_mask = pipe_rf_model_based.named_steps["selectfrommodel"].get_support()
+    mb_selected_feats = X_train_enc.columns[model_based_mask]
+    fs = mb_selected_feats.tolist()
+
+    #TODO: Save selected features
+
+    print('Successfully done feature selection')
+
+    # Model Selection
+    cross_val_results_reg = {}
+    # cross_val_results_reg_fs = {}
+
+    models = {
+        "Baseline": DummyRegressor(),
+        "KNN Regressor": KNeighborsRegressor(),
+        "Ridge": Ridge(),
+        "Random Forest Regressor": RandomForestRegressor(),
+        "Lasso": Lasso(),
+    }
+
+    score_types_reg = {
+        #"neg_mean_squared_error": "neg_mean_squared_error",
+        #"neg_root_mean_squared_error": "neg_root_mean_squared_error",
+        "neg_mape": "neg_mean_absolute_percentage_error", 
+        "r2": "r2",
+    }
+
+    for model_item in models.items():
+        model_name = model_item[0]
+        model_type = model_item[1]
+        corss_validate_result(model_name, model_type, preprocessor, cross_val_results_reg, X_train, y_train, score_types_reg)
+
+    pd.concat(
+        {key: pd.DataFrame(value) for key, value in cross_val_results_reg.items()}, 
+        axis=1
     )
 
-    train_enc.to_csv(data_output_path + 'train_encoded.csv', index=False)
-    test_enc.to_csv(data_output_path + 'test_encoded.csv', index=False)
+    #TODO: Save the cross validate results
+
+    mean_std_cross_val_scores(
+        pipe_rf_model_based, X_train, y_train, return_train_score=True
+    )
+    #TODO: Save the cross validate result with only selected features for Random Forest, 
+    # since it give the best R2 score
+
+    print('Successfully done model analysis')
+
+
+
+
+    # TODO: Hyperparameter tuning
+
+    print('Successfully done hyperparameter tunning')
+
+    # TODO: Best model training and performance analysis
+
+    print('Successfully done model selection')
+
+
 
 if __name__ == "__main__":
     args = docopt(__doc__)
 
-    data_input = args["--data_input"]
-    data_output_path = args["--data_output_path"]
+    data_train = args["--data_train"]
+    data_test = args["--data_test"]
+    file_out_path = args["--file_out_path"]
 
-    preprocess_data(data_input, data_output_path)
+    model_selection_analysis(data_train, data_test, file_out_path)
 
-    print("Successfully filter and split raw data into {}".format(data_output_path))
+    print("Successfully done model selection and related files are in {}".format(file_out_path))
