@@ -62,8 +62,8 @@ def main (data_input, data_output_path):
         height=400
     )
     
-    filepath = "data/processed/yearly_compensation.png"
-    save_chart(yearly_comp_hist, "data/processed/yearly_compensation.png")
+    filepath = os.path.join(data_output_path, "yearly_compensation.png")
+    save_chart(yearly_comp_hist, filepath)
 
     country_order = ["Canada","USA" ]
 
@@ -133,10 +133,11 @@ def main (data_input, data_output_path):
     final_boxplot = ((mainbranch_boxplot | country_boxplot) & (edu_boxplot |  age_boxplot)).properties(title=alt.TitleParams(
                 text='Yearly Compensation Distribuions',
                 subtitle='Developers from the USA seem to make more but there is not a consisten trend for age and edcation level',
-                fontSize=20))
+                fontSize=20),
+                anchor='middle')
 
-    filepath = os.path.join(data_output_path, "boxplot_compensation.png")
-    final_boxplot.save(filepath) 
+    filepath = os.path.join(data_output_path, "final_boxplot.png")
+    save_chart(final_boxplot, filepath )
 
 
 
