@@ -46,11 +46,11 @@ def save_chart(chart, filename, scale_factor=1):
             raise ValueError("Only svg and png formats are supported")
             
 def main (data_input, data_output_path):
-    processed_df = pd.read_csv(data_input)
+    train_encoded = pd.read_csv(data_input)
     
-    #Making histogram depicting the distribution of yearly compensation
+    # making histogram depicting the distribution of yearly compensation
     
-    yearly_comp_hist = alt.Chart(processed_df).mark_bar().encode(
+    yearly_comp_hist = alt.Chart(train_encoded).mark_bar().encode(
         x=alt.X('ConvertedCompYearly',
                 bin=alt.Bin(maxbins=30), 
                 axis=alt.Axis(format='$.0f',
@@ -62,9 +62,102 @@ def main (data_input, data_output_path):
         height=400
     )
     
-    filepath = "data/processed/yearly_compensation.png"
-    save_chart(yearly_comp_hist, "data/processed/yearly_compensation.png")
+    # saving chart as a png file
+    filepath = os.path.join(data_output_path, "yearly_compensation.png")
+    save_chart(yearly_comp_hist, filepath)
+
+    country_order = ["Canada","USA" ]
+
+    education_order = [
+        'Something else', 
+        'Primary school', 
+        'Secondary school',
+        'Some college/uni',
+        'Associate degree', 
+        "Bachelor’s degree", 
+        "Master’s degree",
+        'Professional degree', 
+        'Other doctoral degree']
+
+    main_branch_order = ["Developer by profession", "Not primarily a developer",]
+
+    age_order = [
+        'Prefer not to say', 
+        'Under 18', 
+        '18-24',
+        '25-34',
+        '35-44',
+        '45-54', 
+        '55-64',
+        '65+']  
+
+
+    column_lables = {'EdLevel': education_order,
+                'MainBranch': main_branch_order,
+                'Age': age_order,
+                'Country' : country_order }
+
+    plot_lables = {}
+
+    # creates dictionary of column lables for the plots
+    for column, lables in column_lables.items():
+        plot_lables[column] = ""
+        for i in range(len(lables)):
+            plot_lables[column] += f"datum.label == {i} ? '{lables[i]}' : "
+        plot_lables[column] += "'Unknown'"
+
+    # creates individual box plots
+
+    edu_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('EdLevel:O', title="Education Level", axis=alt.Axis(labelExpr=plot_lables['EdLevel'])),
+                alt.Color('EdLevel', legend=None)
+                )
+
+    age_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('Age:O', title="Age", axis=alt.Axis(labelExpr=plot_lables['Age'])),
+                alt.Color('Age', legend=None)   
+                )
+    mainbranch_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work:O', title="MainBranch", axis=alt.Axis(labelExpr=plot_lables['MainBranch'])),
+                alt.Color('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work', legend=None)
+                )
+
+    country_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('Country_United States of America:O', title="Country", axis=alt.Axis(labelExpr=plot_lables['Country'])),
+                alt.Color('Country_United States of America', legend=None)
+                )
+
+    # combines plots into final figure
+    final_boxplot = ((mainbranch_boxplot | country_boxplot) & (edu_boxplot |  age_boxplot)).properties(title=alt.TitleParams(
+                text='Yearly Compensation Distribuions',
+                subtitle='Developers from the USA seem to make more but there is not a consisten trend for age and edcation level',
+                fontSize=20,
+                anchor='middle'))
+
+    filepath = os.path.join(data_output_path, "final_boxplot.png")
+    save_chart(final_boxplot, filepath )
     
+    # list of features to use in correlation table
+    corr_features = [
+    "YearsCode",
+    "YearsCodePro",
+    "WorkExp",
+    "ConvertedCompYearly"]
+    
+    # subset input data to list of features needed for correlation
+    corr_df = train_encoded[corr_features]
+    corr_table = corr_df.corr()
+    
+    # save table as csv file
+    filepath = os.path.join(data_output_path, "correlation_table.csv")
+    corr_table.to_csv(filepath)
+
+
+
 if __name__ == "__main__":    
     opt = docopt(__doc__)
     main(opt["--data_input"], opt["--data_output_path"])
