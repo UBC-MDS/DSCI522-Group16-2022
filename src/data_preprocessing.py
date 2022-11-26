@@ -203,7 +203,6 @@ def preprocess_data(data_input, data_output_path):
             (ordinal_age_transformer, ordinal_age),
             (binary_transformer, binary_cols),
             (categorical_transformer, categorical_cols),
-            ('passthrough', passthrough_cols),
             ('drop', drop_cols),
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[0]),
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[1]),
@@ -217,7 +216,8 @@ def preprocess_data(data_input, data_output_path):
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[9]),
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[10]),
             (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[11]),
-            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[12])
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[12]),
+            ('passthrough', passthrough_cols)
     )
 
     # fit preprocessor with train df
