@@ -107,24 +107,24 @@ def main (data_input, data_output_path):
     # creates individual box plots
 
     edu_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
-                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
                 alt.Y('EdLevel:O', title="Education Level", axis=alt.Axis(labelExpr=plot_lables['EdLevel'])),
                 alt.Color('EdLevel', legend=None)
                 )
 
     age_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
-                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
                 alt.Y('Age:O', title="Age", axis=alt.Axis(labelExpr=plot_lables['Age'])),
                 alt.Color('Age', legend=None)   
                 )
     mainbranch_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
-                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
                 alt.Y('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work:O', title="MainBranch", axis=alt.Axis(labelExpr=plot_lables['MainBranch'])),
                 alt.Color('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work', legend=None)
                 )
 
     country_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
-                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
                 alt.Y('Country_United States of America:O', title="Country", axis=alt.Axis(labelExpr=plot_lables['Country'])),
                 alt.Color('Country_United States of America', legend=None)
                 )
@@ -137,7 +137,6 @@ def main (data_input, data_output_path):
 
     filepath = os.path.join(data_output_path, "boxplot_compensation.png")
     final_boxplot.save(filepath) 
-
 
 
 
