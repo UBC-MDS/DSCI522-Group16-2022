@@ -7,15 +7,14 @@ Usage: data_model_selection_analysis.py --data_train=<data_train> --data_test=<d
  
 Options:
 --data_train=<data_train>                    train data used for model selection, hyperparameter tuning and best model training
---data_test=<data_test>                    test data used for best model performance evaluation
---data_output_path=<data_output_path>        file path to store the processed data
+--data_test=<data_test>                      test data used for best model performance evaluation
+--file_out_path=<file_out_path>              file path to store the results on model selection, hyperparameter tuning and best model training
 """
 
 # Example: (call in repo root)
-# python data_model_selection_analysis.py --data_train='data/processed/.csv' --data_test='data/processed/test.csv' --file_out_path='documents/'
+# python data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/'
 
 from docopt import docopt
-import numpy as np
 import pandas as pd
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
@@ -24,32 +23,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import train_test_split
 import os
-
-cols_to_choose = [
-    'MainBranch',
-    'Employment',
-    'RemoteWork',
-    'EdLevel',
-    'YearsCode',
-    'YearsCodePro',
-    'DevType',
-    'OrgSize',
-    'Country',
-    'LanguageHaveWorkedWith',
-    'DatabaseHaveWorkedWith',
-    'PlatformHaveWorkedWith',
-    'WebframeHaveWorkedWith',
-    'MiscTechHaveWorkedWith',
-    'ToolsTechHaveWorkedWith',
-    'NEWCollabToolsHaveWorkedWith',
-    'OpSysProfessional use',
-    'VersionControlSystem',
-    'VCInteraction',
-    'OfficeStackAsyncHaveWorkedWith',
-    'Age',
-    'WorkExp',
-    'ICorPM',
-    'ConvertedCompYearly']
 
 # order for ordinal columns
 education_order = [
@@ -98,7 +71,7 @@ multianswer_cols = [
     'OfficeStackAsyncHaveWorkedWith',
     'Employment']
 
-passthrough_cols = ['ConvertedCompYearly']
+# passthrough_cols = ['ConvertedCompYearly']
 
 drop_cols = ['ICorPM']
 
@@ -133,26 +106,28 @@ def get_column_names_from_preporcessor(preprocessor):
             name = multianswer_cols[i-1] + "_" + name
             transformed_column_names.append(name)
 
-    transformed_column_names.append('ConvertedCompYearly')
+    # transformed_column_names.append('ConvertedCompYearly')
     # print(transformed_column_names)
 
     return transformed_column_names
 
 
-def preprocess_data(data_input, data_output_path):
+def write_na_values_for_cols(data_train, data_test, file_out_path):
     """
-    Load the raw data.
-    Filter data and split data into train and test sets.
+    Load the train and test data.
+    Perform model selection analysis, hyperparameter tuning and best model training
     
     Parameters:
-    data_input: raw data with its file path
-    data_output_path:  file path where to store the preprocessed data
+    data_train: train data used for model selection, hyperparameter tuning and best model training
+    data_test: test data used for best model performance evaluation
+    file_out_path:  file path to store the results on model selection, hyperparameter tuning and best model training
     
     Returns:
-    None, just save train.csv and test.csv
+    None, just save related file from model selection, hyperparameter tuning and best model training
 
     Example:
-    preprocess_data('data/raw/survey_results_public.csv', 'data/processed/')
+    write_na_values_for_cols('data/processed/train.csv', 'data/processed/test.csv', 'documents/')
+    
     """
 
     if(not os.path.exists(data_output_path)):
@@ -253,9 +228,10 @@ def preprocess_data(data_input, data_output_path):
 if __name__ == "__main__":
     args = docopt(__doc__)
 
-    data_input = args["--data_input"]
-    data_output_path = args["--data_output_path"]
+    data_train = args["--data_train"]
+    data_test = args["--data_test"]
+    file_out_path = args["--file_out_path"]
 
-    preprocess_data(data_input, data_output_path)
+    write_na_values_for_cols(data_train, data_test, file_out_path)
 
-    print("Successfully filter and split raw data into {}".format(data_output_path))
+    print("Successfully done model selection and related files are in {}".format(file_out_path))
