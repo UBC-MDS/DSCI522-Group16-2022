@@ -139,6 +139,19 @@ def main (data_input, data_output_path):
 
     filepath = os.path.join(data_output_path, "final_boxplot.png")
     save_chart(final_boxplot, filepath )
+    
+    
+    corr_features = [
+    "YearsCode",
+    "YearsCodePro",
+    "WorkExp",
+    "ConvertedCompYearly"]
+
+    corr_df = train_encoded[corr_features]
+    corr_table = corr_df.corr().style.background_gradient().set_caption('Table 1. Correlation Plot Between Key Numeric Features')
+
+    filepath = os.path.join(data_output_path, "correlation_table.png")
+    save_chart(corr_table, filepath)
 
 
 
