@@ -48,7 +48,7 @@ def save_chart(chart, filename, scale_factor=1):
 def main (data_input, data_output_path):
     train_encoded = pd.read_csv(data_input)
     
-    #Making histogram depicting the distribution of yearly compensation
+    # making histogram depicting the distribution of yearly compensation
     
     yearly_comp_hist = alt.Chart(train_encoded).mark_bar().encode(
         x=alt.X('ConvertedCompYearly',
@@ -62,6 +62,7 @@ def main (data_input, data_output_path):
         height=400
     )
     
+    # saving chart as a png file
     filepath = os.path.join(data_output_path, "yearly_compensation.png")
     save_chart(yearly_comp_hist, filepath)
 
@@ -140,16 +141,18 @@ def main (data_input, data_output_path):
     filepath = os.path.join(data_output_path, "final_boxplot.png")
     save_chart(final_boxplot, filepath )
     
-    
+    # list of features to use in correlation table
     corr_features = [
     "YearsCode",
     "YearsCodePro",
     "WorkExp",
     "ConvertedCompYearly"]
-
+    
+    # subset input data to list of features needed for correlation
     corr_df = train_encoded[corr_features]
     corr_table = corr_df.corr()
-
+    
+    # save table as csv file
     filepath = os.path.join(data_output_path, "correlation_table.csv")
     corr_table.to_csv(filepath)
 
