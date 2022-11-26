@@ -1,7 +1,7 @@
 # author: Chen Lin
-# date: 2022-11-25
+# date: 2022-11-26
 
-"""Filter data and split data into train and test sets.
+"""Use the train data to do model selection, hyperparameter tuning and final model building
 
 Usage: data_preprocessing.py --data_input=<data_input> --data_output_path=<data_output_path>
  
