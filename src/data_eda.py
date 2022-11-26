@@ -148,7 +148,7 @@ def main (data_input, data_output_path):
     "ConvertedCompYearly"]
 
     corr_df = train_encoded[corr_features]
-    corr_table = corr_df.corr().style.background_gradient().set_caption('Table 1. Correlation Plot Between Key Numeric Features')
+    corr_table = corr_df.corr()
 
     filepath = os.path.join(data_output_path, "correlation_table.png")
     save_chart(corr_table, filepath)
