@@ -150,8 +150,8 @@ def main (data_input, data_output_path):
     corr_df = train_encoded[corr_features]
     corr_table = corr_df.corr()
 
-    filepath = os.path.join(data_output_path, "correlation_table.png")
-    save_chart(corr_table, filepath)
+    filepath = os.path.join(data_output_path, "correlation_table.csv")
+    corr_table.to_csv(filepath)
 
 
 
