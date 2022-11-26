@@ -64,7 +64,83 @@ def main (data_input, data_output_path):
     
     filepath = "data/processed/yearly_compensation.png"
     save_chart(yearly_comp_hist, "data/processed/yearly_compensation.png")
-    
+
+    country_order = ["Canada","USA" ]
+
+    education_order = [
+        'Something else', 
+        'Primary/elementary school', 
+        'Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)',
+        'Some college/university study without earning a degree',
+        'Associate degree (A.A., A.S., etc.)', 
+        "Bachelor’s degree (B.A., B.S., B.Eng., etc.)", 
+        "Master’s degree (M.A., M.S., M.Eng., MBA, etc.)",
+        'Professional degree (JD, MD, etc.)', 
+        'Other doctoral degree (Ph.D., Ed.D., etc.)']
+
+    main_branch_order = ["I am a developer by profession", "I am not primarily a developer",]
+
+    age_order = [
+        'Prefer not to say', 
+        'Under 18 years old', 
+        '18-24 years old',
+        '25-34 years old',
+        '35-44 years old',
+        '45-54 years old', 
+        '55-64 years old',
+        '65 years or older']
+
+    column_lables = {'EdLevel': education_order,
+                'MainBranch': main_branch_order,
+                'Age': age_order,
+                'Country' : country_order }
+
+    plot_lables = {}
+
+    # creates dictionary of column lables for the plots
+    for column, lables in column_lables.items():
+        plot_lables[column] = ""
+        for i in range(len(lables)):
+            plot_lables[column] += f"datum.label == {i} ? '{lables[i]}' : "
+        plot_lables[column] += "'Unknown'"
+
+    # creates individual box plots
+
+    edu_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('EdLevel:O', title="Education Level", axis=alt.Axis(labelExpr=plot_lables['EdLevel'])),
+                alt.Color('EdLevel', legend=None)
+                )
+
+    age_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('Age:O', title="Age", axis=alt.Axis(labelExpr=plot_lables['Age'])),
+                alt.Color('Age', legend=None)   
+                )
+    mainbranch_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work:O', title="MainBranch", axis=alt.Axis(labelExpr=plot_lables['MainBranch'])),
+                alt.Color('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work', legend=None)
+                )
+
+    country_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
+                alt.X('DevType_academic researcher', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
+                alt.Y('Country_United States of America:O', title="Country", axis=alt.Axis(labelExpr=plot_lables['Country'])),
+                alt.Color('Country_United States of America', legend=None)
+                )
+
+    # combines plots into final figure
+    final_boxplot = ((mainbranch_boxplot | country_boxplot) & (edu_boxplot |  age_boxplot)).properties(title=alt.TitleParams(
+                text='Yearly Compensation Distribuions',
+                subtitle='Developers from the USA seem to make more but there is not a consisten trend for age and edcation level',
+                fontSize=20))
+
+    filepath = os.path.join(data_output_path, "boxplot_compensation.png")
+    final_boxplot.save(filepath) 
+
+
+
+
 if __name__ == "__main__":    
     opt = docopt(__doc__)
     main(opt["--data_input"], opt["--data_output_path"])
