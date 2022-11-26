@@ -72,6 +72,16 @@ age_order = [
     '55-64 years old',
     '65 years or older']
 
+numeric_cols = ['YearsCode', 'YearsCodePro', 'WorkExp']
+
+ordinal_edu = ['EdLevel']
+
+ordinal_age = ['Age']
+
+binary_cols = ['MainBranch', 'Country']
+
+categorical_cols = ['OrgSize', 'RemoteWork']
+
 multianswer_cols = [
     'DevType',
     'LanguageHaveWorkedWith',
@@ -86,16 +96,6 @@ multianswer_cols = [
     'VersionControlSystem',
     'OfficeStackAsyncHaveWorkedWith',
     'Employment']
-
-numeric_cols = ['YearsCode', 'YearsCodePro', 'WorkExp']
-
-ordinal_edu = ['EdLevel']
-
-ordinal_age = ['Age']
-
-binary_cols = ['MainBranch', 'Country']
-
-categorical_cols = ['OrgSize', 'RemoteWork']
 
 passthrough_cols = ['ConvertedCompYearly']
 
@@ -117,6 +117,25 @@ def convert2float(x):
         return float(0)
     else:
         return float(x)
+
+
+def get_column_names_from_preporcessor(preprocessor):
+    transformed_column_names = []
+    for i in range(1,6):
+        temp_names = preprocessor.named_transformers_['pipeline-'+str(i)].get_feature_names_out().tolist()
+        transformed_column_names += temp_names
+
+    for i in range(1,14):
+        temp_names = preprocessor.named_transformers_['countvectorizer-'+str(i)].get_feature_names_out().tolist()
+        # print(temp_names)
+        for name in temp_names:
+            name = multianswer_cols[i-1] + "_" + name
+            transformed_column_names.append(name)
+
+    transformed_column_names.append('ConvertedCompYearly')
+    # print(transformed_column_names)
+
+    return transformed_column_names
 
 
 def preprocess_data(data_input, data_output_path):
@@ -152,16 +171,19 @@ def preprocess_data(data_input, data_output_path):
     print("Successfully saved filtered data into {}".format(data_output_path))
     
     df_filtered = north_america_data
+    df_filtered = write_na_values_for_cols(df_filtered, multianswer_cols)
 
     train_df_filtered, test_df_filtered = train_test_split(df_filtered, test_size=0.10, random_state=522)
 
     # converts string year values to float
     train_df_filtered['YearsCode'] = train_df_filtered['YearsCode'].apply(lambda x: convert2float(x))
     train_df_filtered['YearsCodePro'] = train_df_filtered['YearsCodePro'].apply(lambda x: convert2float(x))
+
     test_df_filtered['YearsCode'] = test_df_filtered['YearsCode'].apply(lambda x: convert2float(x))
     test_df_filtered['YearsCodePro'] = test_df_filtered['YearsCodePro'].apply(lambda x: convert2float(x))
 
-    train_df_filtered = write_na_values_for_cols(train_df_filtered, multianswer_cols)
+    # train_df_filtered = write_na_values_for_cols(train_df_filtered, multianswer_cols)
+    # test_df_filtered = write_na_values_for_cols(test_df_filtered, multianswer_cols)
 
     train_df_filtered.to_csv(data_output_path + 'train.csv', index=False)
     test_df_filtered.to_csv(data_output_path + 'test.csv', index=False)
@@ -170,61 +192,62 @@ def preprocess_data(data_input, data_output_path):
 
     ordinal_edu_transformer = make_pipeline(OrdinalEncoder(categories=[education_order], dtype=int))
 
-    ordinal_age_transformer = make_pipeline(OrdinalEncoder(categories=[age_order], dtype=int))
+    ordinal_age_transformer = make_pipeline(SimpleImputer(strategy='most_frequent'), OrdinalEncoder(categories=[age_order], dtype=int))
 
-    binary_transformer = make_pipeline(OneHotEncoder(drop='if_binary', handle_unknown='ignore', dtype=int))
+    binary_transformer = make_pipeline(SimpleImputer(strategy='most_frequent'), OneHotEncoder(drop='if_binary', handle_unknown='ignore', dtype=int))
 
     categorical_transformer = make_pipeline(OneHotEncoder(handle_unknown='ignore', sparse=False))
 
     preprocessor = make_column_transformer(
-                (numeric_transformer, numeric_cols),
-                (ordinal_edu_transformer, ordinal_edu),
-                (ordinal_age_transformer, ordinal_age),
-                (binary_transformer, binary_cols),
-                (categorical_transformer, categorical_cols),
-                ('passthrough', passthrough_cols),
-                ('drop', drop_cols),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[0]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[1]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[2]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[3]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[4]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[5]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[6]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[7]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[8]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[9]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[10]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[11]),
-                (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[12])
+            (numeric_transformer, numeric_cols),
+            (ordinal_edu_transformer, ordinal_edu),
+            (ordinal_age_transformer, ordinal_age),
+            (binary_transformer, binary_cols),
+            (categorical_transformer, categorical_cols),
+            ('passthrough', passthrough_cols),
+            ('drop', drop_cols),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[0]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[1]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[2]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[3]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[4]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[5]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[6]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[7]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[8]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[9]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[10]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[11]),
+            (CountVectorizer(tokenizer=lambda text: text.split(';')), multianswer_cols[12])
     )
 
-    # fit preprocessor
-    preprocessor.fit_transform(train_df_filtered)
+    # fit preprocessor with train df
+    train_df_filtered_encode = preprocessor.fit_transform(train_df_filtered).todense()
 
-    # creates list of new column names from preprocessing pipelines
-    transformed_column_names = []
+    # creates list of new column names from preprocessing pipelines for train df
+    transformed_column_names_train = get_column_names_from_preporcessor(preprocessor)
 
-    for i in range(1,6):
-        temp_names = preprocessor.named_transformers_['pipeline-'+str(i)].get_feature_names_out().tolist()
-        transformed_column_names += temp_names
+    # fit preprocessor with test df
+    test_df_filtered_encode = preprocessor.fit_transform(test_df_filtered).todense()
 
-    for i in range(1,14):
-        temp_names = preprocessor.named_transformers_['countvectorizer-'+str(i)].get_feature_names_out().tolist()
-        # print(temp_names)
-        for name in temp_names:
-            name = multianswer_cols[i-1] + "_" + name
-            transformed_column_names.append(name)
-
-    # print(transformed_column_names)
+    # creates list of new column names from preprocessing pipelines for test df
+    transformed_column_names_test = get_column_names_from_preporcessor(preprocessor)
+    
 
     train_enc = pd.DataFrame(
-        data=preprocessor.transform(train_df_filtered).todense(), 
+        data=train_df_filtered_encode, 
         index=train_df_filtered.index, 
-        columns=transformed_column_names
+        columns=transformed_column_names_train
+    )
+
+    test_enc = pd.DataFrame(
+        data=test_df_filtered_encode, 
+        index=test_df_filtered.index, 
+        columns=transformed_column_names_test
     )
 
     train_enc.to_csv(data_output_path + 'train_encoded.csv', index=False)
+    test_enc.to_csv(data_output_path + 'test_encoded.csv', index=False)
 
 if __name__ == "__main__":
     args = docopt(__doc__)
