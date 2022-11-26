@@ -46,11 +46,11 @@ def save_chart(chart, filename, scale_factor=1):
             raise ValueError("Only svg and png formats are supported")
             
 def main (data_input, data_output_path):
-    processed_df = pd.read_csv(data_input)
+    train_encoded = pd.read_csv(data_input)
     
     #Making histogram depicting the distribution of yearly compensation
     
-    yearly_comp_hist = alt.Chart(processed_df).mark_bar().encode(
+    yearly_comp_hist = alt.Chart(train_encoded).mark_bar().encode(
         x=alt.X('ConvertedCompYearly',
                 bin=alt.Bin(maxbins=30), 
                 axis=alt.Axis(format='$.0f',
