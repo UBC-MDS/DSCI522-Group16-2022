@@ -69,26 +69,27 @@ def main (data_input, data_output_path):
 
     education_order = [
         'Something else', 
-        'Primary/elementary school', 
-        'Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)',
-        'Some college/university study without earning a degree',
-        'Associate degree (A.A., A.S., etc.)', 
-        "Bachelor’s degree (B.A., B.S., B.Eng., etc.)", 
-        "Master’s degree (M.A., M.S., M.Eng., MBA, etc.)",
-        'Professional degree (JD, MD, etc.)', 
-        'Other doctoral degree (Ph.D., Ed.D., etc.)']
+        'Primary school', 
+        'Secondary school',
+        'Some college/uni',
+        'Associate degree', 
+        "Bachelor’s degree", 
+        "Master’s degree",
+        'Professional degree', 
+        'Other doctoral degree']
 
-    main_branch_order = ["I am a developer by profession", "I am not primarily a developer",]
+    main_branch_order = ["Developer by profession", "Not primarily a developer",]
 
     age_order = [
         'Prefer not to say', 
-        'Under 18 years old', 
-        '18-24 years old',
-        '25-34 years old',
-        '35-44 years old',
-        '45-54 years old', 
-        '55-64 years old',
-        '65 years or older']
+        'Under 18', 
+        '18-24',
+        '25-34',
+        '35-44',
+        '45-54', 
+        '55-64',
+        '65+']  
+
 
     column_lables = {'EdLevel': education_order,
                 'MainBranch': main_branch_order,
