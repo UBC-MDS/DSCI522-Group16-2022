@@ -13,6 +13,29 @@ library(tidyverse)
 library(knitr)
 library(kableExtra)
 
+# Summary
+
+By this point we have all heard how data-related jobs are the talk of the town and by just learning to code you could be raking in a 6-figure salary in no time.
+But aside from all the hype and click bait news articles, is it possible to predict how much compensation you can expect given your experience and other related factors?
+As current budding data scientists our group is very interested in this question.
+Using the latest release of the Stack overflow Annual Developers Survey, we set out to build a machine learning model to predict the total yearly compensation for data-related jobs.
+
+After conducting pre-processing and a quick feature selection pipeline, we decided to use a Random Forrest Regressoras our final model.
+Once hyperparameter tuning was completed, our model yielded a score of BLANK on unseen training data.
+Although the model did not preform as well as we had hoped, it still did better than the Dummy Regressor!
+As this was our first attempt at answering this question and the data set we chose ended up being very difficult to work with given the way data was recorded from the survey, we all agree that this was a good staring point and that results could be improved with some focused feature engineering.
+Also, as this project is fully reproducible, feel free to copy the repo and give it a try yourself!
+
+# Introduction
+
+As we are all current students in the MDS program, a question we have is: where will we end up working after this program is over??
+A natural follow up question to this is, how much can we expect to be compensated given our previous experience, target industry, geographic location, etc.
+Wouldn't it be nice if we could create some sort of model that would help us gain insight into this question?
+Is there anything we have learnt so far in our program that could shed some light on this conundrum?
+Well, you have come to the right place!
+Our group has found a recent and comprehensive dataset processed from the Stack overflow Annual Developers Survey which we will use to build a predictive machine learning model to help answer this burning question that is on our and the rest of our cohort's mind!
+Read on for a breakdown of our question and an overview of our approach.
+
 # Data Preprocessing
 
 ## Dataset
@@ -118,6 +141,38 @@ Then it is imputed to fill the missing values.
 The train split will be 90% of the overall filtered data and test splits will be 10% of the overall filtered data.
 
 The by defining the column transformer for different types of features, the train split was encoded for EDA use, which will be explained in the next section.
+
+# Analysis
+
+#### EDA
+
+There are 8,558 observations of survey responses in our filtered and encoded dataset with no missing values in any rows or columns.
+
+We have 266 usable features in total after preprocessing and transforming our initial dataset.
+Our target column is `ConvertedCompYearly` that shows the yearly compensation that was reported by each individual responded converted into $USD.
+
+Below is the distribution of our target column, which rightly skewed.
+
+```{r out.width="60%", out.height="60%", fig.align='center', fig.cap="**Figure 1.** Distribution of Yearly Compensation"}
+knitr::include_graphics("yearly_compensation.png")
+```
+
+There are a few categorical features that were of interest to us, including Main Branch, Country, Education Level and Age so we examined their distributions via boxplots.  Based on the figures below we can see that developers in the USA tend to make more on average than those in Canada, with age and education level not showing any consistent trends.  
+
+```{r out.width="100%", fig.align='center', fig.cap="**Figure 2.** Distribution of Yearly Compensation for Key Categorical Features"}
+knitr::include_graphics("final_boxplot.png")
+```
+
+We also examined the correlation between a few numeric features of interest including YearsCode, YearsCodePro and WorkExp with our target ConvertedCompYearly. Below is the correlation matrix for our key numeric features.  We see a modest correlation between years spent coding, both overall and professionally, with yearly compensation.
+
+
+```{r fig.align='center'}
+kable(read.csv("correlation_table.csv"),
+      caption = "**Table 1.** Correlation Matrix of Key Numeric Features") %>%
+  kable_styling(full_width = F, font_size = 10) %>%
+  kable_classic_2(full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
+```
 
 # Model Selection
 The final model would be able to predict the Data Science yearly converted salary when giving new data point representing a North American (Canada or US) Data Science related job.
