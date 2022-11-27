@@ -16,6 +16,7 @@ Options:
 
 from docopt import docopt
 import pandas as pd
+import numpy as np
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 from sklearn.feature_extraction.text import CountVectorizer
@@ -28,6 +29,8 @@ from sklearn.dummy import DummyRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import RandomizedSearchCV
+
 import os
 
 # order for ordinal columns
@@ -246,7 +249,7 @@ def model_selection_analysis(data_train, data_test, file_out_path):
     select_lr = SelectFromModel(Ridge(), threshold="0.8*mean")
 
     pipe_rf_model_based = make_pipeline(
-        preprocessor, select_lr, RandomForestRegressor(random_state=16)
+        preprocessor, select_lr, RandomForestRegressor(random_state=522)
     )
     pipe_rf_model_based.fit(X_train, y_train)
 
@@ -282,31 +285,51 @@ def model_selection_analysis(data_train, data_test, file_out_path):
         model_type = model_item[1]
         corss_validate_result(model_name, model_type, preprocessor, cross_val_results_reg, X_train, y_train, score_types_reg)
 
-    pd.concat(
-        {key: pd.DataFrame(value) for key, value in cross_val_results_reg.items()}, 
-        axis=1
-    )
+    table_2 = pd.concat(
+    {key: pd.DataFrame(value) for key, value in cross_val_results_reg.items()}, 
+    axis=1)
+    table_2.to_csv(file_out_path + "model_accuracies.csv")
 
-    #TODO: Save the cross validate results
-
-    mean_std_cross_val_scores(
-        pipe_rf_model_based, X_train, y_train, return_train_score=True
+    table_3 = mean_std_cross_val_scores(
+    pipe_rf_model_based, X_train, y_train, return_train_score=True
     )
-    #TODO: Save the cross validate result with only selected features for Random Forest, 
-    # since it give the best R2 score
+    table_3.to_frame().T.to_csv(file_out_path + "rf_result_with_feature_selection")
 
     print('Successfully done model analysis')
 
-
-
-
-    # TODO: Hyperparameter tuning
-
+    # Number of features to consider at every split
+    max_features = ['auto', 'sqrt']
+    # Maximum number of levels in tree
+    max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
+    max_depth.append(None)
+    # Method of selecting samples for training each tree
+    bootstrap = [True, False]
+    # Create the random grid
+    random_grid = {
+                   'randomforestregressor__max_features': max_features,
+                   'randomforestregressor__max_depth': max_depth,
+                   'randomforestregressor__bootstrap': bootstrap
+    }
+    
+    pipe_rf = make_pipeline(preprocessor, RandomForestRegressor(random_state=522))
+    
+    rf_random = RandomizedSearchCV(pipe_rf,
+                   param_distributions=random_grid,
+                   n_iter=10,
+                   n_jobs=-1,
+                   scoring='r2',
+                   return_train_score=True)
+    rf_random.fit(X_train, y_train)
+    pd.DataFrame(rf_random.best_params_, index=[0]).to_csv(file_out_path + "best_params.csv")
+    pd.DataFrame({'best_random_forest_train_score':rf_random.best_score_}, index=[0]).to_csv(file_out_path + "validation_score.csv") 
+    pd.DataFrame({'best_random_forest_test_score':rf_random.score(X_test, y_test)}, index=[0]).to_csv(file_out_path + "test_score.csv")
     print('Successfully done hyperparameter tunning')
 
     # TODO: Best model training and performance analysis
+    pd.DataFrame({'best_random_forest_test_score':rf_random.score(X_test, y_test)}, index=[0]).to_csv(file_out_path + "test_score.csv")
 
     print('Successfully done model selection')
+    
 
 
 
