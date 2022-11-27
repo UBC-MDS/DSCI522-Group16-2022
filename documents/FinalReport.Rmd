@@ -1,19 +1,17 @@
----
-title: "Data Science Salary Predictor"
-author: UBC MDS Cohort 7 DSCI 522 Team 16 - Chen Lin, Jonah Hamilton, Mike Guron, Tanmay Agarwal
+
+title: "Data Science Job Salary Predictor"
+author: UBC MDS Cohort 7 DSCI522 Team 16 - Chen Lin, Jonah Hamilton, Mike Guron, Tanmay Agarwal
 date: "11/26/2022" 
 output: 
   html_document:
     toc: TRUE
 bibliography: references.bib
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
-```
 
 # Data Preprocessing
 
