@@ -1,17 +1,20 @@
-
+---
 title: "Data Science Job Salary Predictor"
 author: UBC MDS Cohort 7 DSCI522 Team 16 - Chen Lin, Jonah Hamilton, Mike Guron, Tanmay Agarwal
-date: "11/26/2022" 
+date: "11/26/2022"
 output: 
   html_document:
     toc: TRUE
 bibliography: references.bib
 ---
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+```
 
 # Summary
 
@@ -153,18 +156,17 @@ Our target column is `ConvertedCompYearly` that shows the yearly compensation th
 
 Below is the distribution of our target column, which rightly skewed.
 
-```{r out.width="60%", out.height="60%", fig.align='center', fig.cap="**Figure 1.** Distribution of Yearly Compensation"}
+```{r out.width="60%", out.height="60%", fig.align='center', fig.cap="**Figure 2.** Distribution of Yearly Compensation for Key Categorical Features"}
 knitr::include_graphics("yearly_compensation.png")
 ```
 
-There are a few categorical features that were of interest to us, including Main Branch, Country, Education Level and Age so we examined their distributions via boxplots.  Based on the figures below we can see that developers in the USA tend to make more on average than those in Canada, with age and education level not showing any consistent trends.  
+There are a few categorical features that were of interest to us, including Main Branch, Country, Education Level and Age so we examined their distributions via boxplots. Based on the figures below we can see that developers in the USA tend to make more on average than those in Canada, with age and education level not showing any consistent trends.
 
 ```{r out.width="100%", fig.align='center', fig.cap="**Figure 2.** Distribution of Yearly Compensation for Key Categorical Features"}
 knitr::include_graphics("final_boxplot.png")
 ```
 
-We also examined the correlation between a few numeric features of interest including YearsCode, YearsCodePro and WorkExp with our target ConvertedCompYearly. Below is the correlation matrix for our key numeric features.  We see a modest correlation between years spent coding, both overall and professionally, with yearly compensation.
-
+We also examined the correlation between a few numeric features of interest including YearsCode, YearsCodePro and WorkExp with our target ConvertedCompYearly. Below is the correlation matrix for our key numeric features. We see a modest correlation between years spent coding, both overall and professionally, with yearly compensation.
 
 ```{r fig.align='center'}
 kable(read.csv("correlation_table.csv"),
@@ -175,29 +177,32 @@ kable(read.csv("correlation_table.csv"),
 ```
 
 # Model Selection
+
 The final model would be able to predict the Data Science yearly converted salary when giving new data point representing a North American (Canada or US) Data Science related job.
 
 The following models were used for evaluation through cross validation by using the train split data, along with the designated proprocessor:
 
-- DummyRegressor
-- KNeighborsRegressor
-- Ridge
-- RandomForestRegressor
-- Lasso
+-   DummyRegressor
+-   KNeighborsRegressor
+-   Ridge
+-   RandomForestRegressor
+-   Lasso
 
 The result decision was based on the mean R2 score from the cross validation. The result can be see below:
 
-<!Tanmay add his cv result table>
+\<!Tanmay add his cv result table\>
 
 And the RandomForestRegressor gives the highest R2 validation score of 0.35, thus RandomForestRegressor will be used for the upcoming hyperparameter tuning and final model building.
 
 ## Hyper-parameter tuning
+
 By using the RandomizedSearchCV, the best model is selection based on best score and best parameters as below:
 
-<!Tanmay add his best-related information>
+\<!Tanmay add his best-related information\>
 
 ## Final model building
-By using the best model with the best hyperparameter as mentioned above, the final model score <!Tanmay add final score> against the test data.
+
+By using the best model with the best hyperparameter as mentioned above, the final model score \<!Tanmay add final score\> against the test data.
 
 # Further Improvements
 
@@ -207,16 +212,16 @@ By using the best model with the best hyperparameter as mentioned above, the fin
 
 3.  For regression problems, it is necessary to have more data points. The solution could be to include more survey entries from recent years, not only 2022. This could make the prediction accuracy higher.
 
-Final report was build by using the following software or libraries: \
-R [@R], \
-Rmarkdown [@Rrmarkdown], \
-Knitr [@knitr], \
-kableExtra [@kableextra], \
-tidyverse [@tidy]  \
-Python [@python] \
-pandas[@pandas], \
-numpy[@numpy], \
-scikit-learn[@scikit-learn], \
-altair[@altair], \
+Final report was build by using the following software or libraries:\
+R [@R],\
+Rmarkdown [@Rrmarkdown],\
+Knitr [@knitr],\
+kableExtra [@kableextra],\
+tidyverse [@tidy]\
+Python [@python]\
+pandas[@pandas],\
+numpy[@numpy],\
+scikit-learn[@scikit-learn],\
+altair[@altair],\
 
 # References
