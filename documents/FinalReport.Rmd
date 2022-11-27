@@ -231,6 +231,8 @@ kable(read.csv("test_score.csv"),
   scroll_box(width = "100%", height = "200px")
 ```
 
+As the result on unseen data is better than the cross validation score, the final model is generalizing well.
+
 # Further Improvements
 
 1.  Feature engineering and importance analysis can help to reduce the impact from any noise feature. Removing those noise features can be done based on the correlation with the target feature, which is the converted yearly compensation.
