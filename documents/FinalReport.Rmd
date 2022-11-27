@@ -8,7 +8,6 @@ output:
 bibliography: references.bib
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
@@ -18,26 +17,13 @@ library(kableExtra)
 
 # Summary
 
-By this point we have all heard how data-related jobs are the talk of the town and by just learning to code you could be raking in a 6-figure salary in no time.
-But aside from all the hype and click bait news articles, is it possible to predict how much compensation you can expect given your experience and other related factors?
-As current budding data scientists our group is very interested in this question.
-Using the latest release of the Stack overflow Annual Developers Survey, we set out to build a machine learning model to predict the total yearly compensation for data-related jobs.
+By this point we have all heard how data-related jobs are the talk of the town and by just learning to code you could be raking in a 6-figure salary in no time. But aside from all the hype and click bait news articles, is it possible to predict how much compensation you can expect given your experience and other related factors? As current budding data scientists our group is very interested in this question. Using the latest release of the Stack overflow Annual Developers Survey, we set out to build a machine learning model to predict the total yearly compensation for data-related jobs.
 
-After conducting pre-processing and a quick feature selection pipeline, we decided to use a Random Forrest Regressoras our final model.
-Once hyperparameter tuning was completed, our model yielded a score of BLANK on unseen training data.
-Although the model did not preform as well as we had hoped, it still did better than the Dummy Regressor!
-As this was our first attempt at answering this question and the data set we chose ended up being very difficult to work with given the way data was recorded from the survey, we all agree that this was a good staring point and that results could be improved with some focused feature engineering.
-Also, as this project is fully reproducible, feel free to copy the repo and give it a try yourself!
+After conducting pre-processing and a quick feature selection pipeline, we decided to use a Random Forrest Regressoras our final model. Once hyperparameter tuning was completed, our model yielded a score of BLANK on unseen training data. Although the model did not preform as well as we had hoped, it still did better than the Dummy Regressor! As this was our first attempt at answering this question and the data set we chose ended up being very difficult to work with given the way data was recorded from the survey, we all agree that this was a good staring point and that results could be improved with some focused feature engineering. Also, as this project is fully reproducible, feel free to copy the repo and give it a try yourself!
 
 # Introduction
 
-As we are all current students in the MDS program, a question we have is: where will we end up working after this program is over??
-A natural follow up question to this is, how much can we expect to be compensated given our previous experience, target industry, geographic location, etc.
-Wouldn't it be nice if we could create some sort of model that would help us gain insight into this question?
-Is there anything we have learnt so far in our program that could shed some light on this conundrum?
-Well, you have come to the right place!
-Our group has found a recent and comprehensive dataset processed from the Stack overflow Annual Developers Survey which we will use to build a predictive machine learning model to help answer this burning question that is on our and the rest of our cohort's mind!
-Read on for a breakdown of our question and an overview of our approach.
+As we are all current students in the MDS program, a question we have is: where will we end up working after this program is over?? A natural follow up question to this is, how much can we expect to be compensated given our previous experience, target industry, geographic location, etc. Wouldn't it be nice if we could create some sort of model that would help us gain insight into this question? Is there anything we have learnt so far in our program that could shed some light on this conundrum? Well, you have come to the right place! Our group has found a recent and comprehensive dataset processed from the Stack overflow Annual Developers Survey which we will use to build a predictive machine learning model to help answer this burning question that is on our and the rest of our cohort's mind! Read on for a breakdown of our question and an overview of our approach.
 
 # Data Preprocessing
 
@@ -151,8 +137,7 @@ The by defining the column transformer for different types of features, the trai
 
 There are 8,558 observations of survey responses in our filtered and encoded dataset with no missing values in any rows or columns.
 
-We have 266 usable features in total after preprocessing and transforming our initial dataset.
-Our target column is `ConvertedCompYearly` that shows the yearly compensation that was reported by each individual responded converted into $USD.
+We have 266 usable features in total after preprocessing and transforming our initial dataset. Our target column is `ConvertedCompYearly` that shows the yearly compensation that was reported by each individual responded converted into \$USD.
 
 Below is the distribution of our target column, which rightly skewed.
 
@@ -190,19 +175,65 @@ The following models were used for evaluation through cross validation by using 
 
 The result decision was based on the mean R2 score from the cross validation. The result can be see below:
 
-\<!Tanmay add his cv result table\>
+```{r fig.align='center'}
+kable(read.csv("model_accuracies.csv"),
+      caption = "**Table 2.** Cross Validation results for different models") %>%
+  kable_styling(full_width = F, font_size = 10) %>%
+  kable_classic_2(full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
+```
 
-And the RandomForestRegressor gives the highest R2 validation score of 0.35, thus RandomForestRegressor will be used for the upcoming hyperparameter tuning and final model building.
+And the RandomForestRegressor gives the highest R2 validation score of around 0.32, thus RandomForestRegressor will be used for the upcoming hyperparameter tuning and final model building.
+
+
+## Feature Selection
+
+By using Ridge we are able to select  features, but the 
+cross-validation accuracy reduces to about 0.27.
+
+
+```{r fig.align='center'}
+kable(read.csv("rf_result_with_feature_selection.csv"),
+      caption = "**Table 3.** Cross Validation results for random forest with selected features") %>%
+  kable_styling(full_width = F, font_size = 10) %>%
+  kable_classic_2(full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
+```
 
 ## Hyper-parameter tuning
 
 By using the RandomizedSearchCV, the best model is selection based on best score and best parameters as below:
 
-\<!Tanmay add his best-related information\>
+```{r fig.align='center'}
+kable(read.csv("best_params.csv"),
+      caption = "**Table 4.** Best Parameters for random forest") %>%
+  kable_styling(full_width = F, font_size = 10) %>%
+  kable_classic_2(full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
+```
+
+
+```{r fig.align='center'}
+kable(read.csv("validation_score.csv"),
+      caption = "**Table 5.** Validation score for random forest") %>%
+  kable_styling(full_width = F, font_size = 10) %>%
+  kable_classic_2(full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
+```
+
+As we can see, there is an improvement of about 1% in the R2.
 
 ## Final model building
 
-By using the best model with the best hyperparameter as mentioned above, the final model score \<!Tanmay add final score\> against the test data.
+By using the best model with the best hyperparameter as mentioned above, the model score against the test data is shown in Table 6
+
+```{r fig.align='center'}
+kable(read.csv("validation_score.csv"),
+      caption = "**Table 6.** Test Score") %>%
+  kable_styling(full_width = F, font_size = 10) %>%
+  kable_classic_2(full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
+```
 
 # Further Improvements
 

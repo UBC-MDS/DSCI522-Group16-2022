@@ -293,7 +293,7 @@ def model_selection_analysis(data_train, data_test, file_out_path):
     table_3 = mean_std_cross_val_scores(
     pipe_rf_model_based, X_train, y_train, return_train_score=True
     )
-    table_3.to_frame().T.to_csv(file_out_path + "rf_result_with_feature_selection")
+    table_3.to_frame().T.to_csv(file_out_path + "rf_result_with_feature_selection.csv")
 
     print('Successfully done model analysis')
 
