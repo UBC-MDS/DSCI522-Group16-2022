@@ -156,7 +156,7 @@ Our target column is `ConvertedCompYearly` that shows the yearly compensation th
 
 Below is the distribution of our target column, which rightly skewed.
 
-```{r out.width="60%", out.height="60%", fig.align='center', fig.cap="**Figure 2.** Distribution of Yearly Compensation for Key Categorical Features"}
+```{r out.width="60%", out.height="60%", fig.align='center', fig.cap="**Figure 1.** Distribution of Yearly Compensation"}
 knitr::include_graphics("yearly_compensation.png")
 ```
 
