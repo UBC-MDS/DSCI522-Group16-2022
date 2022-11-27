@@ -185,12 +185,9 @@ kable(read.csv("model_accuracies.csv"),
 
 And the RandomForestRegressor gives the highest R2 validation score of around 0.32, thus RandomForestRegressor will be used for the upcoming hyperparameter tuning and final model building.
 
-
 ## Feature Selection
 
-By using Ridge we are able to select  features, but the 
-cross-validation accuracy reduces to about 0.27.
-
+By using Ridge we are able to select 105 features, but the cross-validation accuracy reduces to about 0.27.
 
 ```{r fig.align='center'}
 kable(read.csv("rf_result_with_feature_selection.csv"),
@@ -212,7 +209,6 @@ kable(read.csv("best_params.csv"),
   scroll_box(width = "100%", height = "200px")
 ```
 
-
 ```{r fig.align='center'}
 kable(read.csv("validation_score.csv"),
       caption = "**Table 5.** Validation score for random forest") %>%
@@ -228,7 +224,7 @@ As we can see, there is an improvement of about 1% in the R2.
 By using the best model with the best hyperparameter as mentioned above, the model score against the test data is shown in Table 6
 
 ```{r fig.align='center'}
-kable(read.csv("validation_score.csv"),
+kable(read.csv("test_score.csv"),
       caption = "**Table 6.** Test Score") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
@@ -237,22 +233,22 @@ kable(read.csv("validation_score.csv"),
 
 # Further Improvements
 
-1 Feature engineering and importance analysis can help to reduce the impact from any noise feature. Removing those noise features can be done based on the correlation with the target feature, which is the converted yearly compensation.
+1.  Feature engineering and importance analysis can help to reduce the impact from any noise feature. Removing those noise features can be done based on the correlation with the target feature, which is the converted yearly compensation.
 
 2.  For those feature containing null values or values as 'unspecified', if there is a better way to make those values can be more meaningful, it would be helpful to improve the overall model performance.
 
 3.  For regression problems, it is necessary to have more data points. The solution could be to include more survey entries from recent years, not only 2022. This could make the prediction accuracy higher.
 
 Final report was build by using the following software or libraries:\
-R [@R],\
-Rmarkdown [@Rrmarkdown],\
-Knitr [@knitr],\
-kableExtra [@kableextra],\
-tidyverse [@tidy]\
-Python [@python]\
-pandas[@pandas],\
-numpy[@numpy],\
-scikit-learn[@scikit-learn],\
-altair[@altair],\
+- R [@R],\
+- Rmarkdown [@Rrmarkdown],\
+- Knitr [@knitr],\
+- kableExtra [@kableextra],\
+- tidyverse [@tidy]\
+- Python [@python]\
+- pandas[@pandas],\
+- numpy[@numpy],\
+- scikit-learn[@scikit-learn],\
+- altair[@altair],\
 
 # References
