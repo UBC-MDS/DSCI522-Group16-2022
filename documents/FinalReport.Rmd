@@ -1,14 +1,11 @@
 ---
-title: "Credibility Classification of Credit Card Clients"
-author: Team 13 - Chester Wang, HanChen Wang, Qurat-ul-Ain Azim, Renee Kwon
-date: "11/26/2022 (updated: `r Sys.Date()`)" 
+title: "Data Science Salary Predictor"
+author: UBC MDS Cohort 7 DSCI 522 Team 16 - Chen Lin, Jonah Hamilton, Mike Guron, Tanmay Agarwal
+date: "11/26/2022" 
 output: 
   html_document:
     toc: TRUE
 bibliography: references.bib
-editor_options: 
-  markdown: 
-    wrap: sentence
 ---
 
 ```{r setup, include=FALSE}
@@ -18,188 +15,155 @@ library(knitr)
 library(kableExtra)
 ```
 
-# Summary
-
-In the field of risk management, one of the most common problems is default prediction.
-This allows companies to predict the credibility of each person, analyze the risk level and optimize decisions for better business economics.
-In this project, we aim to learn and predict a credit card holder's credibility based on his/her basic personal information (gender, education, age, history of past payment etc. ).
-
-Our final classifier using the Logistic Regression model did not perform as well as we hoped on our unseen test data, with a final f1 score of 0.471.
-Of the 6,000 clients in our test data, our model correctly predicted the default status of 4,141 clients correctly.
-There were 1,129 incorrect predictions, either predicting a customer will default on their payment when they have not or a customer will not default when they have.
-Incorrect predictions of either type can be costly for financial institutions and thus we will continue to study our data and improve our model before it is put into production.
-
-# Introduction
-
-Through this project, we aim to answer the question: Which attributes are most important when we use machine learning models to predict the default?
-Specifically we would like to know if the weight of attributes would change when we employ different models.
-Answering this question is, from our perspective, of great importance because it allows to understand what attributes relate to credibility the most.
-We would also aim to a comparative study of the mainstream machine learning classification models to be able to identify how the best performing model assigns weights to the various model features.
-
-# Methods
+# Data Preprocessing
 
 ## Dataset
 
-We use a dataset hosted by the UCI machine learning repository.
-Originally it is collected by researchers from Chung Hua University and Tamkang University.
-As the probability of default cannot be actually acquired, the targets are obtained through estimation as stated by the authors of this dataset.
-The dataset consists of 30000 instances, with each consists of 23 attributes and a target.
-The raw dataset is about 5.5 MB large, and we split it into the training set (80%) and testing set (20%) for further use.
-The data attributes range from client's gender, age, education, previous payment history, credit amount etc.
+The dataset used for this prediction model building of Data Science Salary Predictor is from 2022 Stack Overflow Annual Developer Survey, can be obtained from links below:
+
+[Dataset download page](https://insights.stackoverflow.com/survey)
+
+[Download dataset directly to your local](https://info.stackoverflowsolutions.com/rs/719-EMH-566/images/stack-overflow-developer-survey-2022.zip)
+
+The overall survey features over 70,000 responses fielded from over 180 countries, examining all aspects of the developer experience from learning to code to favorite technologies for version control and workplace experience.
+
+A detailed summary of the overall dataset can be found [here](https://survey.stackoverflow.co/2022/)
+
+Each row in the data set represents the survey response of an individual working in a data-related career including information on skills, experience, technologies worked with, and demographics.
+
+Since we are interested in developing a predictor for North American Data Science Salaries, the dataset was subset to only include responses from individuals in Canada and the United States as a proxy for the whole of North America as the bulk of the responses are from these two countries.
+
+Also by limiting the salary range with \$500k, making the predictor more reliable for the majority of the Data Science community.
 
 ## Feature Descriptions
 
-#### Categorical Features
+The full feature description schema can be found [here]('../data/raw/survey_results_schema.csv').
 
-`Education`: Ordinal feature.
-1 = graduate school; 2 = university; 3 = high school; 4 = others.\
+Below are the descriptions based on the types of features, which are used for data pre-processing:
 
-`Marital status`: 1 = married; 2 = single; 3 = others.\
+### Numeric Features
 
-`PAY_X`: Ordinal feature.
-The history of monthly payment tracked from April to September, 2005, as follows: PAY_1 = the repayment status in September, 2005; PAY_2 = the repayment status in August, 2005; .
-. .;PAY_6 = the repayment status in April, 2005.
-The measurement scale for the repayment status is: -2 = no payment required; -1 = pay duly; 1 = payment delay for one month; 2 = payment delay for two months; .
-. .; 8 = payment delay for eight months; 9 = payment delay for nine months and above.
+`YearsCode`: Including any education, how many years have you been coding in total? Range from 0 year to over 50 years
+
+`YearsCodePro`: NOT including education, how many years have you coded professionally (as a part of your work)? Range from 0 year to over 50 years
+
+`WorkExp`: How many years of working experience do you have? Range from 0 year to over 50 years
+
+### Categorical Features
+
+`OrgSize`: Approximately how many people are employed by the company or organization you currently work for?
+
+9 unique values ['20 to 99 employees', '1,000 to 4,999 employees', '500 to 999 employees', '10,000 or more employees', '5,000 to 9,999 employees', 'Just me - I am a freelancer, sole proprietor, etc.', '2 to 9 employees', '100 to 499 employees', '10 to 19 employees', 'I don't know'],
+
+`RemoteWork`: Which best describes your current work situation?
+
+3 unique values ['Fully remote', 'Hybrid (some remote, some in-person)', 'Full in-person']
 
 #### Binary Features
 
-`Sex` is reported as a binary feature (1 = male; 2 = female).
+`MainBranch`: Which of the following options best describes you today? Here, by "developer" we mean "someone who writes code."
 
-#### Numeric features
+1 = 'I am not primarily a developer, but I write code sometimes as part of my work', 0 = 'I am a developer by profession'
 
-`LIMIT_BAL`: The amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.\
+`Country`:Where do you live?
 
-`Age`: The age of the individual (years).\
+1 = 'United States of America', 0 = 'Canada'
 
-`BILL_AMTX`: Amount of bill statement (NT dollar).
-BILL_AMT1 = amount of bill statement in September, 2005; BILL_AMT2 = amount of bill statement in August, 2005; .
-. .; BILL_AMT6 = amount of bill statement in April, 2005.\
+### Oridinal Features
 
-`PAY_AMTX`: Amount of previous payment (NT dollar).
-PAY_AMT1 = amount paid in September, 2005; PAY_AMT2 = amount paid in August, 2005; .
-. .;PAY_AMT6 = amount paid in April, 2005.
+`EdLevel`: Which of the following best describes the highest level of formal education that you've completed? \*
 
-[Link to Source Data](https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients).
+Following the order below with assigned value form 0 to 8
 
-# Analysis
+['Something else', 'Primary/elementary school', 'Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)','Some college/university study without earning a degree', 'Associate degree (A.A., A.S., etc.)', "Bachelor's degree (B.A., B.S., B.Eng., etc.)", "Master's degree (M.A., M.S., M.Eng., MBA, etc.)",'Professional degree (JD, MD, etc.)', 'Other doctoral degree (Ph.D., Ed.D., etc.)']
 
-#### EDA
+`Age`: What is your age?
 
-There are 30,000 observations of credit card clients in our dataset with no missing values in any rows or columns.
+Following the order below with assigned value form 0 to 7
 
-Upon our first look at the data, we found some features contained ambiguous categories.
-We cleaned up the data so the categories were more meaningful.
+['Prefer not to say', 'Under 18 years old', '18-24 years old','25-34 years old','35-44 years old','45-54 years old', '55-64 years old','65 years or older']
 
-We have 24 usable features in total, with one binary feature, eight categorical features, and 14 numerical features.
-Our target column is `default_payment_next_month` that has two classes: class 0 representing the client paying their bill in the next month and class 1 representing a client choosing to default on their bill in the next month.
+### Multi-selection question features
 
-There is class imbalance in our data, with 77.9% of examples as class 1 and 22.1% as class 0.
+`DevType`: Which of the following describes your current job? Please select all that apply.
 
-We have categorical features such as marriage, education, and monthly payment history.
-Below is the distribution of our target class according to the various categories.
+`LanguageHaveWorkedWith`: Which programming, scripting, and markup languages have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-```{r out.width="95%", fig.align='center', fig.cap="**Figure 1.** Distribution of Categorical Features"}
-knitr::include_graphics("../data/eda_results/categorical_result.png")
-```
+`DatabaseHaveWorkedWith`: Which database environments have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-There is one binary feature in our data set: sex of the client.
-There is a higher proportion of female clients who have defaulted in our dataset.
+`PlatformHaveWorkedWith`: Which cloud platforms have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-```{r out.width="75%", fig.align='center', fig.cap="**Figure 2.** Distribution of Binary Feature"}
-knitr::include_graphics("../data/eda_results/binary_result.png")
-```
+`WebframeHaveWorkedWith`: Which web frameworks and web technologies have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-Numeric features include bill amounts, payment amounts, and age of the client.
-We get an idea that the default ratio is not dependent on the months, however, we will verify this using our prediction model.
-We also see there is a slight increase in the default ratio in the middle to late age range of our clients.
+`MiscTechHaveWorkedWith`: Which other frameworks and libraries have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-```{r out.width="95%", fig.align='center', fig.cap="**Figure 3.** Distribution of Numeric Feature"}
-knitr::include_graphics("../data/eda_results/numeric_result.png")
-```
+`ToolsTechHaveWorkedWith`: Which developer tools have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-Below is the correlation matrix for all of our features.
-We see a strong correlation between our target and payment history as well as the credit limit offered to the client.
+`NEWCollabToolsHaveWorkedWith`: Which development environmentsdid you use regularly over the past year, and which do you want to work with over the next year?
 
-```{r fig.align='center'}
-kable(round(cor(read.csv("../data/eda_results/corr.csv")), 2),
-      caption = "**Table 1.** Correlation Matrix") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
-  kable_classic_2(full_width = F) %>%
-  scroll_box(width = "100%", height = "200px")
-```
+`OpSysProfessional use`: What is the primary operating system in which you work?
 
-# Predictive Model
+`VCInteraction`: How do you interact with your version control system? Select all that apply.
 
-We are interested in finding clients who are likely to default on their next payment but falsely predicting a client will default can be costly in terms of customer loyalty.
-Therefore, we chose to build our model using the f1 score as our metric.
+`VersionControlSystem`: What are the primary version control systems you use?
 
-The following models were tested and compared:
+`OfficeStackAsyncHaveWorkedWith`: Which collaborative work management toolsdid you use regularly over the past year, and which do you want to w ork with over the next year?
 
--   Decision Tree Classifier
+`Employment`: Which of the following best describes your current employment status?
 
--   K Neighbours Classifier
+## Preprocessing Data
 
-<!-- -->
+The Data was first filter by country, job type and converted compensation.
 
--   RBF SVM
+Then it is imputed to fill the missing values.
 
--   Logistic Regression Model
+The train split will be 90% of the overall filtered data and test splits will be 10% of the overall filtered data.
 
--   Ridge Classifier Model
+The by defining the column transformer for different types of features, the train split was encoded for EDA use, which will be explained in the next section.
 
--   Random Forest Classifier
+# Model Selection
+The final model would be able to predict the Data Science yearly converted salary when giving new data point representing a North American (Canada or US) Data Science related job.
 
-From the cross validation scores for each of these models, the mean validation score returned highest for the Random Forest Classifier as 0.47.
-However, we chose to use the Logistic Regression Classifier so that we are able to get a sense of whether a feature has a positive or negative impact on our prediction.
+The following models were used for evaluation through cross validation by using the train split data, along with the designated proprocessor:
 
-We then performed hyperparameter optimization for the Logistic Regression model to find our optimum hyperparamater `C` value as `0.438` and `class_weight = balanced`.
-Using our model with optimized hyperparameters, the f1 validation score returned was 0.479.
+- DummyRegressor
+- KNeighborsRegressor
+- Ridge
+- RandomForestRegressor
+- Lasso
 
-# Results
+The result decision was based on the mean R2 score from the cross validation. The result can be see below:
 
-We used our optimized Logistic Regression model on the test data of 6,000 clients.
-The f1 score on the test data was 0.467.
+<!Tanmay add his cv result table>
 
-From the coefficient table below, we see the most important positively associated features is `PAY_0`: the default history of the client.
-This is expected because the longer a client has delayed their payments, the more likely they are to default in that month.
-`BILL_AMT3` was the second strongest positively associated feature returned from our model - which corresponds to the bill amount due in the month of July.
-This is also comparable to the bill amounts of the neighbouring months.
+And the RandomForestRegressor gives the highest R2 validation score of 0.35, thus RandomForestRegressor will be used for the upcoming hyperparameter tuning and final model building.
 
-The strongest negative coefficient was `BILL_AMT1` which is expected as the lower the amount due in the previous month, the higher the likely a client will default.
-Also, `PAY_AMT2` was a strong predicting variable for the default classification.
-This is also expected as higher payments in recent month will result in less likelihood of a client defaulting.
+## Hyper-parameter tuning
+By using the RandomizedSearchCV, the best model is selection based on best score and best parameters as below:
 
-Below is the table of the coefficients of all the features.
+<!Tanmay add his best-related information>
 
-```{r}
-feat_table = read.csv("../data/results/feature_coefficient.csv") %>%
-  select(c(Feature,Coefficient))
-
-kable(feat_table) %>%
-  kable_classic_2(full_width = F)
-```
-
-Our model made 4,141 correct predictions for our clients, out of 6,000 (69%).
-
-We predicted 494 clients would not default and make their payment when in fact, they would not.
-These false predictions would be costly for the institution in terms of opportunity cost as they could be charging a higher interest rate on these clients.
-On the other hand, we made 1365 false predictions on clients and predicted they would default, when they will not.
-This is costly because a false labeling and a possible unjustified interest rate increase can lead to client dissatisfaction.
-
-Our model did not perform as well as we hoped with an f1 test score of 0.471.
-The data we started with contained a lot of noise and non-linear relations that our model was not able to fit well to and further improvements will need to be made before it is put into production.
+## Final model building
+By using the best model with the best hyperparameter as mentioned above, the final model score <!Tanmay add final score> against the test data.
 
 # Further Improvements
 
-Several things could be done to further improve this model.
-First of all, further optimization through feature engineering and feature selection may be beneficial.
-We may be able to get rid of some features that are noisy and have low correlation to our target value.
-As well, as mentioned earlier, there were features that contained ambiguous categories and our model is not capturing the data that was sorted into "other" categories.
-Proper data labelling needs to be done to account for this ambiguous data.
-Lastly, more useful features would improve this model, such as income, size of the household, and amount of debt.
-With more relevant features for our model to fit to, the data and our prediction accuracy will improve.
+1 Feature engineering and importance analysis can help to reduce the impact from any noise feature. Removing those noise features can be done based on the correlation with the target feature, which is the converted yearly compensation.
 
-This report was constructed using Rmarkdown [@Rrmarkdown], ReadR[@readr], Knitr [@knitr], kableExtra [@kableextra], and tidyverse [@tidy] in R [@R] and the following python [@python] packages: pandas[@pandas], numpy[@numpy], scikit-learn[@scikit-learn], altair[@altair], matplotlib [@matplotlib], and uci_ml_data_set [@uci_ml_data_set].
+2.  For those feature containing null values or values as 'unspecified', if there is a better way to make those values can be more meaningful, it would be helpful to improve the overall model performance.
+
+3.  For regression problems, it is necessary to have more data points. The solution could be to include more survey entries from recent years, not only 2022. This could make the prediction accuracy higher.
+
+Final report was build by using the following software or libraries: \
+R [@R], \
+Rmarkdown [@Rrmarkdown], \
+Knitr [@knitr], \
+kableExtra [@kableextra], \
+tidyverse [@tidy]  \
+Python [@python] \
+pandas[@pandas], \
+numpy[@numpy], \
+scikit-learn[@scikit-learn], \
+altair[@altair], \
 
 # References
