@@ -3,7 +3,7 @@ title: "Data Science Job Salary Predictor"
 author: UBC MDS Cohort 7 DSCI522 Team 16 - Chen Lin, Jonah Hamilton, Mike Guron, Tanmay Agarwal
 date: "11/26/2022"
 output: 
-  html_document:
+  pdf_document:
     toc: TRUE
 bibliography: references.bib
 ---
