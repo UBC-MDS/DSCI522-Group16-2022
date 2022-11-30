@@ -3,8 +3,8 @@ python data_download.py --url='https://info.stackoverflowsolutions.com/rs/719-EM
  
 # Use raw data to output 3 files:
 # 1. data_filtered.csv
-# 2. train.csv (80% from data_filtered.csv)
-# 3. test.csv (20% from data_filtered.csv)
+# 2. train.csv (90% from data_filtered.csv)
+# 3. test.csv (10% from data_filtered.csv)
 python data_preprocessing.py --data_input='../data/raw/survey_results_public.csv' --data_output_path='../data/processed/'
 
 # Use data_filtered.csv do EDA

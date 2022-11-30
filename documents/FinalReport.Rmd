@@ -47,7 +47,7 @@ Also by limiting the salary range with \$500k, making the predictor more reliabl
 
 ## Feature Descriptions
 
-The full feature description schema can be found [here]('../data/raw/survey_results_schema.csv').
+The full feature description schema can be found [here](../data/raw/survey_results_schema.csv).
 
 Below are the descriptions based on the types of features, which are used for data pre-processing:
 
@@ -142,19 +142,19 @@ We have 266 usable features in total after preprocessing and transforming our in
 Below is the distribution of our target column, which rightly skewed.
 
 ```{r out.width="60%", out.height="60%", fig.align='center', fig.cap="**Figure 1.** Distribution of Yearly Compensation"}
-knitr::include_graphics("yearly_compensation.png")
+knitr::include_graphics("figures/yearly_compensation.png")
 ```
 
 There are a few categorical features that were of interest to us, including Main Branch, Country, Education Level and Age so we examined their distributions via boxplots. Based on the figures below we can see that developers in the USA tend to make more on average than those in Canada, with age and education level not showing any consistent trends.
 
 ```{r out.width="100%", fig.align='center', fig.cap="**Figure 2.** Distribution of Yearly Compensation for Key Categorical Features"}
-knitr::include_graphics("final_boxplot.png")
+knitr::include_graphics("figures/final_boxplot.png")
 ```
 
 We also examined the correlation between a few numeric features of interest including YearsCode, YearsCodePro and WorkExp with our target ConvertedCompYearly. Below is the correlation matrix for our key numeric features. We see a modest correlation between years spent coding, both overall and professionally, with yearly compensation.
 
 ```{r fig.align='center'}
-kable(read.csv("correlation_table.csv"),
+kable(read.csv("results/correlation_table.csv"),
       caption = "**Table 1.** Correlation Matrix of Key Numeric Features") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
@@ -176,7 +176,7 @@ The following models were used for evaluation through cross validation by using 
 The result decision was based on the mean R2 score from the cross validation. The result can be see below:
 
 ```{r fig.align='center'}
-kable(read.csv("model_accuracies.csv"),
+kable(read.csv("results/model_accuracies.csv"),
       caption = "**Table 2.** Cross Validation results for different models") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
@@ -190,7 +190,7 @@ And the RandomForestRegressor gives the highest R2 validation score of around 0.
 By using Ridge we are able to select 105 features, but the cross-validation accuracy reduces to about 0.27.
 
 ```{r fig.align='center'}
-kable(read.csv("rf_result_with_feature_selection.csv"),
+kable(read.csv("results/rf_result_with_feature_selection.csv"),
       caption = "**Table 3.** Cross Validation results for random forest with selected features") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
@@ -202,7 +202,7 @@ kable(read.csv("rf_result_with_feature_selection.csv"),
 By using the RandomizedSearchCV, the best model is selection based on best score and best parameters as below:
 
 ```{r fig.align='center'}
-kable(read.csv("best_params.csv"),
+kable(read.csv("results/best_params.csv"),
       caption = "**Table 4.** Best Parameters for random forest") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
@@ -210,7 +210,7 @@ kable(read.csv("best_params.csv"),
 ```
 
 ```{r fig.align='center'}
-kable(read.csv("validation_score.csv"),
+kable(read.csv("results/validation_score.csv"),
       caption = "**Table 5.** Validation score for random forest") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
@@ -224,7 +224,7 @@ As we can see, there is an improvement of about 1% in the R2.
 By using the best model with the best hyperparameter as mentioned above, the model score against the test data is shown in Table 6
 
 ```{r fig.align='center'}
-kable(read.csv("test_score.csv"),
+kable(read.csv("results/test_score.csv"),
       caption = "**Table 6.** Test Score") %>%
   kable_styling(full_width = F, font_size = 10) %>%
   kable_classic_2(full_width = F) %>%
