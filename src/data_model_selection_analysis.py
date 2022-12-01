@@ -322,7 +322,6 @@ def model_selection_analysis(data_train, data_test, file_out_path):
     rf_random.fit(X_train, y_train)
     pd.DataFrame(rf_random.best_params_, index=[0]).to_csv(file_out_path + "best_params.csv")
     pd.DataFrame({'best_random_forest_train_score':rf_random.best_score_}, index=[0]).to_csv(file_out_path + "validation_score.csv") 
-    pd.DataFrame({'best_random_forest_test_score':rf_random.score(X_test, y_test)}, index=[0]).to_csv(file_out_path + "test_score.csv")
     print('Successfully done hyperparameter tunning')
 
     # TODO: Best model training and performance analysis
