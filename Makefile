@@ -20,7 +20,7 @@ data/processed/filtered_data.csv data/processed/train.csv data/processed/test.cs
 
 # Use train_encoded.csv do EDA
 # Save generated files or images in documents folder
-<output file form eds script, Jonah and Mike>: src/data_eda.py
+documents/figures/yearly_compensation.png documents/figures/final_boxplot.png documents/results/correlation_table.csv: src/data_eda.py
 	python src/data_eda.py --data_input='data/processed/train_encoded.csv' -file_out_path='documents/' 
 
 # Use train.csv do model selection, hyperparameter tuning, final model traning and scoring with test.csv
