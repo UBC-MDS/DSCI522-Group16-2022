@@ -11,7 +11,7 @@ Options:
 """
 
 # Example:
-# src/data_eda.py --data_input= 'data/processed/train_df_filtered.csv' --data_output_path=<data/processed>
+# src/data_eda.py --data_input= 'data/processed/train_df_filtered.csv' --data_output_path='documents/figures/'
 
 import altair as alt
 import pandas as pd
@@ -153,7 +153,7 @@ def main (data_input, data_output_path):
     corr_table = corr_df.corr()
     
     # save table as csv file
-    filepath = os.path.join(data_output_path, "correlation_table.csv")
+    filepath = os.path.join('documents/results/', "correlation_table.csv")
     corr_table.to_csv(filepath)
 
 

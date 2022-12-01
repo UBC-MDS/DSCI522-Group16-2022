@@ -1,0 +1,8 @@
+,Baseline,Baseline,KNN Regressor,KNN Regressor,Ridge,Ridge,Random Forest Regressor,Random Forest Regressor,Lasso,Lasso
+,mean,std,mean,std,mean,std,mean,std,mean,std
+fit_time,1.359,0.056,1.488,0.187,1.526,0.03,312.318,10.917,12.908,0.079
+score_time,0.362,0.015,1.928,0.131,0.398,0.016,0.479,0.022,0.39,0.014
+test_neg_mean_absolute_percentage_error,-23.073,36.162,-24.616,37.464,-22.684,37.116,-20.423,29.394,-22.502,36.674
+train_neg_mean_absolute_percentage_error,-23.044,9.016,-16.648,5.903,-23.215,9.459,-7.161,2.602,-23.162,9.412
+test_r2,-0.001,0.001,0.154,0.023,0.315,0.019,0.329,0.016,0.313,0.021
+train_r2,0.0,0.0,0.436,0.01,0.377,0.004,0.906,0.001,0.377,0.004

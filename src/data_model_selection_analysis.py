@@ -12,7 +12,7 @@ Options:
 """
 
 # Example: (call in repo root)
-# python src/data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/'
+# python src/data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/results/'
 
 from docopt import docopt
 import pandas as pd
@@ -175,7 +175,7 @@ def model_selection_analysis(data_train, data_test, file_out_path):
     None, just save related file from model selection, hyperparameter tuning and best model training
 
     Example:
-    model_selection_analysis('data/processed/train.csv', 'data/processed/test.csv', 'documents/')
+    model_selection_analysis('data/processed/train.csv', 'data/processed/test.csv', 'documents/results/')
     
     """
 
