@@ -26,7 +26,7 @@ documents/figures/yearly_compensation.png documents/figures/final_boxplot.png do
 # Use train.csv do model selection, hyperparameter tuning, final model traning and scoring with test.csv
 # Use test.csv to evaluate model performance
 # Save any file generated in documents folder
-data/documents/results/best_params.csv data/documents/results/validation_score.csv data/documents/results/test_score.csv: src/data_model_selection_analysis.py
+data/documents/results/model_accuracies.csv data/documents/results/rf_result_with_feature_selection.csv data/documents/results/best_params.csv data/documents/results/validation_score.csv data/documents/results/test_score.csv: src/data_model_selection_analysis.py
 	python src/data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/'
 
 # render final report
