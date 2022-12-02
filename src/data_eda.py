@@ -46,6 +46,13 @@ def save_chart(chart, filename, scale_factor=1):
             raise ValueError("Only svg and png formats are supported")
             
 def main (data_input, data_output_path):
+
+    if(not os.path.exists(data_output_path)):
+        os.makedirs(os.path.dirname(data_output_path))
+
+    if(not os.path.exists('documents/results/')):
+        os.makedirs(os.path.dirname('documents/results/'))
+
     train_encoded = pd.read_csv(data_input)
     
     # making histogram depicting the distribution of yearly compensation
@@ -139,7 +146,7 @@ def main (data_input, data_output_path):
                 anchor='middle'))
 
     filepath = os.path.join(data_output_path, "final_boxplot.png")
-    save_chart(final_boxplot, filepath )
+    save_chart(final_boxplot, filepath)
     
     # list of features to use in correlation table
     corr_features = [
