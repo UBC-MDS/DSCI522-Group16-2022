@@ -29,7 +29,7 @@ data/documents/results/model_accuracies.csv data/documents/results/rf_result_wit
 	python src/data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/results/'
 
 # render final report
-documents/FinalReport.pdf: documents/FinalReport.Rmd documents/references.bib data/raw/survey_results_schema.csv documents/figures/yearly_compensation.png documents/figures/final_boxplot.png documents/results/correlation_table.csv data/documents/results/model_accuracies.csv data/documents/results/rf_result_with_feature_selection.csv data/documents/results/best_params.csv data/documents/results/validation_score.csv data/documents/results/test_score.csv
+documents/FinalReport.pdf: documents/FinalReport.Rmd documents/references.bib data/raw/survey_results_schema.csv documents/figures/yearly_compensation.png data/documents/results/model_accuracies.csv
 	Rscript -e "rmarkdown::render('documents/FinalReport.Rmd')"
 
 clean: 
