@@ -69,29 +69,46 @@ Also there are lots of null value, thus will will drop the rows with null values
 
 ## Usage
 
-To reproduce the analysis follow the commands below:
+To replicate the analysis, first to clone this GitHub repository along with installing the dependencies using the [environment yaml file](/environment.yml)
+
+### Method 1: To reproduce the analysis follow the commands below in the project root directory:
 
 ``` bash
 # Downloading the raw data
-python data_download.py --url='https://info.stackoverflowsolutions.com/rs/719-EMH-566/images/stack-overflow-developer-survey-2022.zip'
- --out_file='data/raw'
+	python src/data_download.py --url='https://info.stackoverflowsolutions.com/rs/719-EMH-566/images/stack-overflow-developer-survey-2022.zip' --out_file='data/raw'
+
  
 # Use raw data to output 3 files:
 # 1. data_filtered.csv
 # 2. train.csv (80% from data_filtered.csv)
 # 3. test.csv (20% from data_filtered.csv)
-python data_preprocessing.py --data_input='../data/raw/survey_results_public.csv' --data_output_path='../data/processed/'
+	python src/data_preprocessing.py --data_input='data/raw/survey_results_public.csv' --data_output_path='data/processed/'
+
 
 # Use data_filtered.csv do EDA
 # Save generated files or images
-python data_eda.py --data_input='../data/processed/train.csv' -file_out_path='../documents/' 
+	python src/data_eda.py --data_input='data/processed/train_encoded.csv' --data_output_path='documents/figures/'
 
 # Use train.csv do model selection, hyperparameter tuning, final model training and scoring with test.csv
 # Save any file generated
-python data_model_selection_analysis.py --data_train='../data/processed/train.csv' --data_test='../data/processed/test.csv' --file_out_path='../documents/'
+	python src/data_model_selection_analysis.py --data_train='data/processed/train.csv' --data_test='data/processed/test.csv' --file_out_path='documents/results/'
 
 # generates the final report
-# to add, final report rmd script
+	Rscript -e "rmarkdown::render('documents/FinalReport.Rmd')"
+```
+
+### Method 2: Using Makefile
+
+Run the following command at the command line/terminal in the project root directory:
+
+```
+make
+```
+
+To reset the project with cleaning file path/directory, without any intermeidate plot images or results csv files, run the following command at the command line/terminal in the project root directory:
+
+```
+make clean
 ```
 
 ## Licenses
