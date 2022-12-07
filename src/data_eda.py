@@ -142,7 +142,7 @@ def main (data_input, data_output_path):
                 anchor='middle')
                 ).configure_axis(
                 labelFontSize=14,
-                titleFontSize=15)
+                titleFontSize=14)
 
     filepath = os.path.join(data_output_path, "final_boxplot.png")
     save_chart(final_boxplot, filepath)
