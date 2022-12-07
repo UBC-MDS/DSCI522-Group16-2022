@@ -1,8 +1,7 @@
 # Data Science Salary Predictor 
 
-## Project Proposal
+## Contributors and Maintainers
 
-Contributors:
   - Jonah Hamilton
   - Mike Guron
   - Chen Lin
