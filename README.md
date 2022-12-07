@@ -60,7 +60,7 @@ The feature below is the target the analysis want to predict:
 The EDA and model selection can be done through JupyterNotebook with required libraries mentioned in the environment yaml file, by filtering the desired features, train-test dataset split, model selection, hyper parameter optimization, final model decision.  The models that we will test out for our predictor include the following:
 
   - Dummy Regressor (as a baseline)
-  - k-Nearest Neighbours (KNN) Regressor
+  - K-Nearest Neighbours (KNN) Regressor
   - Ridge
   - Random Forest Regressor
   - Lasso
