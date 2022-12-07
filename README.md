@@ -57,9 +57,15 @@ The main features columns to be used for training purposes in the analysis from 
 The feature below is the target the analysis want to predict:
 - CompTotal --> ConvertedCompYearly
 
-The EDA and model selection can be done through JupyterNotebook with required libraries mentioned in the environment yaml file, by filtering the desired features, train-test dataset split, model selection, hyper parameter optimization, final model decision.
+The EDA and model selection can be done through JupyterNotebook with required libraries mentioned in the environment yaml file, by filtering the desired features, train-test dataset split, model selection, hyper parameter optimization, final model decision.  The models that we will test out for our predictor include the following:
 
-The final model should be able to predict salary for new data scientists with an accept margin of error.
+  - Dummy Regressor (as a baseline)
+  - k-Nearest Neighbours (KNN) Regressor
+  - Ridge
+  - Random Forest Regressor
+  - Lasso
+
+The final model should be able to predict salary for new data scientists with an acceptable margin of error.
 
 ## Exploratory Data Analysis
 Since we want to focus on the data points for US and Canada, data scientist/analysis related jobs, we filter the dataset.
