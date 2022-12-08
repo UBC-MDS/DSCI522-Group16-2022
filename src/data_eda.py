@@ -80,16 +80,16 @@ def main (data_input, data_output_path):
         'Primary school', 
         'Secondary school',
         'Some college/uni',
-        'Associate degree', 
-        "Bachelor’s degree", 
-        "Master’s degree",
-        'Professional degree', 
-        'Other doctoral degree']
+        'Associate', 
+        "Bachelor’s", 
+        "Master’s",
+        'Professional', 
+        'Doctorate']
 
-    main_branch_order = ["Developer by profession", "Not primarily a developer",]
+    main_branch_order = ["Developer", "Not Developer",]
 
     age_order = [
-        'Prefer not to say', 
+        'Unspecified', 
         'Under 18', 
         '18-24',
         '25-34',
@@ -117,25 +117,21 @@ def main (data_input, data_output_path):
 
     edu_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
                 alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
-                alt.Y('EdLevel:O', title="Education Level", axis=alt.Axis(labelExpr=plot_lables['EdLevel'])),
-                alt.Color('EdLevel', legend=None)
+                alt.Y('EdLevel:O', title="Education Level", axis=alt.Axis(labelExpr=plot_lables['EdLevel']))
                 )
 
     age_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
                 alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
-                alt.Y('Age:O', title="Age", axis=alt.Axis(labelExpr=plot_lables['Age'])),
-                alt.Color('Age', legend=None)   
+                alt.Y('Age:O', title="Age", axis=alt.Axis(labelExpr=plot_lables['Age']))
                 )
     mainbranch_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
                 alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
-                alt.Y('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work:O', title="MainBranch", axis=alt.Axis(labelExpr=plot_lables['MainBranch'])),
-                alt.Color('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work', legend=None)
+                alt.Y('MainBranch_I am not primarily a developer, but I write code sometimes as part of my work:O', title="MainBranch", axis=alt.Axis(labelExpr=plot_lables['MainBranch']))
                 )
 
     country_boxplot = alt.Chart(train_encoded).mark_boxplot().encode(
                 alt.X('ConvertedCompYearly', title ="Yearly Compensation (USD)", axis=alt.Axis(format='$~s')),
-                alt.Y('Country_United States of America:O', title="Country", axis=alt.Axis(labelExpr=plot_lables['Country'])),
-                alt.Color('Country_United States of America', legend=None)
+                alt.Y('Country_United States of America:O', title="Country", axis=alt.Axis(labelExpr=plot_lables['Country']))
                 )
 
     # combines plots into final figure
@@ -143,7 +139,10 @@ def main (data_input, data_output_path):
                 text='Yearly Compensation Distribuions',
                 subtitle='Developers from the USA seem to make more but there is not a consisten trend for age and edcation level',
                 fontSize=20,
-                anchor='middle'))
+                anchor='middle')
+                ).configure_axis(
+                labelFontSize=14,
+                titleFontSize=14)
 
     filepath = os.path.join(data_output_path, "final_boxplot.png")
     save_chart(final_boxplot, filepath)
