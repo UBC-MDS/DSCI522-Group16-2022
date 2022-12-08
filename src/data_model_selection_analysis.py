@@ -270,7 +270,7 @@ def model_selection_analysis(data_train, data_test, file_out_path):
         "KNN Regressor": KNeighborsRegressor(),
         "Ridge": Ridge(),
         "Random Forest Regressor": RandomForestRegressor(),
-        "Lasso": Lasso(),
+        "Lasso": Lasso(max_iter=20_000, tol=0.01),
     }
 
     score_types_reg = {
@@ -298,7 +298,7 @@ def model_selection_analysis(data_train, data_test, file_out_path):
     print('Successfully done model analysis')
 
     # Number of features to consider at every split
-    max_features = ['auto', 'sqrt']
+    max_features = ['log2', 'sqrt']
     # Maximum number of levels in tree
     max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
     max_depth.append(None)
@@ -319,18 +319,16 @@ def model_selection_analysis(data_train, data_test, file_out_path):
                    n_jobs=-1,
                    scoring='r2',
                    return_train_score=True)
+    print('Starting hyperparameter tuning')
     rf_random.fit(X_train, y_train)
     pd.DataFrame(rf_random.best_params_, index=[0]).to_csv(file_out_path + "best_params.csv")
     pd.DataFrame({'best_random_forest_train_score':rf_random.best_score_}, index=[0]).to_csv(file_out_path + "validation_score.csv") 
-    print('Successfully done hyperparameter tunning')
+    print('Successfully done hyperparameter tuning')
 
     # TODO: Best model training and performance analysis
     pd.DataFrame({'best_random_forest_test_score':rf_random.score(X_test, y_test)}, index=[0]).to_csv(file_out_path + "test_score.csv")
 
-    print('Successfully done model selection')
     
-
-
 
 if __name__ == "__main__":
     args = docopt(__doc__)
