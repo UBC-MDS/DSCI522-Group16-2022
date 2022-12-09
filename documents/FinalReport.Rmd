@@ -125,6 +125,11 @@ Following the order below with assigned value form 0 to 7
 - `OfficeStackAsyncHaveWorkedWith`: Which collaborative work management toolsdid you use regularly over the past year, and which do you want to w ork with over the next year?
 
 - `Employment`: Which of the following best describes your current employment status?
+  
+**Note:**
+
+If you want to check out what are the options available for the multi-selecition questions, <br>
+please refer to the [original survey summary](https://survey.stackoverflow.co/2022/#technology)
 
 ## Preprocessing Data
 
