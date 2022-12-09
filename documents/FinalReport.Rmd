@@ -58,41 +58,41 @@ Below are the descriptions based on the types of features, which are used for da
 
 ### Numeric Features
 
-`YearsCode`: Including any education, how many years have you been coding in total? Range from 0 year to over 50 years
+- `YearsCode`: Including any education, how many years have you been coding in total? Range from 0 year to over 50 years
 
-`YearsCodePro`: NOT including education, how many years have you coded professionally (as a part of your work)? Range from 0 year to over 50 years
+- `YearsCodePro`: NOT including education, how many years have you coded professionally (as a part of your work)? Range from 0 year to over 50 years
 
-`WorkExp`: How many years of working experience do you have? Range from 0 year to over 50 years
+- `WorkExp`: How many years of working experience do you have? Range from 0 year to over 50 years
 
 ### Categorical Features
 
-`OrgSize`: Approximately how many people are employed by the company or organization you currently work for?
+- `OrgSize`: Approximately how many people are employed by the company or organization you currently work for?
 
 9 unique values ['20 to 99 employees', '1,000 to 4,999 employees', '500 to 999 employees', '10,000 or more employees', '5,000 to 9,999 employees', 'Just me - I am a freelancer, sole proprietor, etc.', '2 to 9 employees', '100 to 499 employees', '10 to 19 employees', 'I don't know'],
 
-`RemoteWork`: Which best describes your current work situation?
+- `RemoteWork`: Which best describes your current work situation?
 
 3 unique values ['Fully remote', 'Hybrid (some remote, some in-person)', 'Full in-person']
 
 #### Binary Features
 
-`MainBranch`: Which of the following options best describes you today? Here, by "developer" we mean "someone who writes code."
+- `MainBranch`: Which of the following options best describes you today? Here, by "developer" we mean "someone who writes code."
 
 1 = 'I am not primarily a developer, but I write code sometimes as part of my work', 0 = 'I am a developer by profession'
 
-`Country`:Where do you live?
+- `Country`:Where do you live?
 
 1 = 'United States of America', 0 = 'Canada'
 
 ### Oridinal Features
 
-`EdLevel`: Which of the following best describes the highest level of formal education that you've completed? \*
+- `EdLevel`: Which of the following best describes the highest level of formal education that you've completed? \*
 
 Following the order below with assigned value form 0 to 8
 
 ['Something else', 'Primary/elementary school', 'Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)','Some college/university study without earning a degree', 'Associate degree (A.A., A.S., etc.)', "Bachelor's degree (B.A., B.S., B.Eng., etc.)", "Master's degree (M.A., M.S., M.Eng., MBA, etc.)",'Professional degree (JD, MD, etc.)', 'Other doctoral degree (Ph.D., Ed.D., etc.)']
 
-`Age`: What is your age?
+- `Age`: What is your age?
 
 Following the order below with assigned value form 0 to 7
 
@@ -100,31 +100,31 @@ Following the order below with assigned value form 0 to 7
 
 ### Multi-selection question features
 
-`DevType`: Which of the following describes your current job? Please select all that apply.
+- `DevType`: Which of the following describes your current job? Please select all that apply.
 
-`LanguageHaveWorkedWith`: Which programming, scripting, and markup languages have you done extensive development work in over the past year, and which do you want to work in over the next year?
+- `LanguageHaveWorkedWith`: Which programming, scripting, and markup languages have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-`DatabaseHaveWorkedWith`: Which database environments have you done extensive development work in over the past year, and which do you want to work in over the next year?
+- `DatabaseHaveWorkedWith`: Which database environments have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-`PlatformHaveWorkedWith`: Which cloud platforms have you done extensive development work in over the past year, and which do you want to work in over the next year?
+- `PlatformHaveWorkedWith`: Which cloud platforms have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-`WebframeHaveWorkedWith`: Which web frameworks and web technologies have you done extensive development work in over the past year, and which do you want to work in over the next year?
+- `WebframeHaveWorkedWith`: Which web frameworks and web technologies have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-`MiscTechHaveWorkedWith`: Which other frameworks and libraries have you done extensive development work in over the past year, and which do you want to work in over the next year?
+- `MiscTechHaveWorkedWith`: Which other frameworks and libraries have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-`ToolsTechHaveWorkedWith`: Which developer tools have you done extensive development work in over the past year, and which do you want to work in over the next year?
+- `ToolsTechHaveWorkedWith`: Which developer tools have you done extensive development work in over the past year, and which do you want to work in over the next year?
 
-`NEWCollabToolsHaveWorkedWith`: Which development environmentsdid you use regularly over the past year, and which do you want to work with over the next year?
+- `NEWCollabToolsHaveWorkedWith`: Which development environmentsdid you use regularly over the past year, and which do you want to work with over the next year?
 
-`OpSysProfessional use`: What is the primary operating system in which you work?
+- `OpSysProfessional use`: What is the primary operating system in which you work?
 
-`VCInteraction`: How do you interact with your version control system? Select all that apply.
+- `VCInteraction`: How do you interact with your version control system? Select all that apply.
 
-`VersionControlSystem`: What are the primary version control systems you use?
+- `VersionControlSystem`: What are the primary version control systems you use?
 
-`OfficeStackAsyncHaveWorkedWith`: Which collaborative work management toolsdid you use regularly over the past year, and which do you want to w ork with over the next year?
+- `OfficeStackAsyncHaveWorkedWith`: Which collaborative work management toolsdid you use regularly over the past year, and which do you want to w ork with over the next year?
 
-`Employment`: Which of the following best describes your current employment status?
+- `Employment`: Which of the following best describes your current employment status?
 
 ## Preprocessing Data
 
