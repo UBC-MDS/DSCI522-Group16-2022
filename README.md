@@ -117,6 +117,10 @@ make clean
 ```
 ### Method 3: Docker Usage
 
+```
+docker pull tanmayagarwal/data-science-salary-predictor 
+```
+
 
 ## Licenses
 
