@@ -154,7 +154,10 @@ Then run the following commands in a Tterminal from the root directory of the pr
 
 
 ## Makefile dependency diagram
-**Note**: Please click on the image to view the image in original size._
+
+**Note 1**: Please click on the image to view the image in original size.
+
+**Note 2**: The name of files are not their absolute path in the image below, in order to make the file more readable
 
 <img src="img/Makefile.png">
 
