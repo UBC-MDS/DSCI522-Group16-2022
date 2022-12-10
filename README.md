@@ -109,7 +109,7 @@ To replicate the analysis, first to clone this GitHub repository along with inst
 Run the following command at the command line/terminal in the project root directory:
 
 ```
-make
+make all
 ```
 
 To reset the project with cleaning file path/directory, without any intermeidate plot images or results csv files, run the following command at the command line/terminal in the project root directory:
