@@ -119,7 +119,7 @@ make clean
 ## Makefile dependency diagram
 **Note**: Please click on the image to view the image in original size._
 
-<img src="Makefile.png">
+<img src="img/Makefile.png">
 
 ## Licenses
 
