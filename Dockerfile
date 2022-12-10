@@ -35,10 +35,11 @@ RUN conda install -c conda-forge --quiet --yes \
 RUN conda install -c conda-forge --quiet --yes \
     'r-base=4.2.1' \
     'r-rmarkdown' \
-    'r-tidyverse=1.3*' 
+    'r-tidyverse=1.3*' \
+    'r-kableExtra'
 
 # Install extra packages
 RUN Rscript -e "install.packages('knitr', repos = 'http://cran.us.r-project.org')"
-RUN Rscript -e "install.packages('kableExtra', repos = 'http://cran.us.r-project.org')"
+
 RUN python -m pip install vl-convert-python
 
