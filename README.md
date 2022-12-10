@@ -128,7 +128,7 @@ Then run the following commands in a Tterminal from the root directory of the pr
   ```
   docker pull tanmayagarwal/data-science-salary-predictor
   ```
-2. Run the docker image:
+2. Run Makefile `make all` with the Docker image:
 
     - For Windows operating systems:
         ```
@@ -140,7 +140,7 @@ Then run the following commands in a Tterminal from the root directory of the pr
         ```
         **Note**: Try add `--platform linux/amd64` as an optional flag to the command above if not working
 
-3. To delete the files and figures created from the analysis and return the repository to a clean state, run the following:
+3. Run Makefile `make clean` with Docker image. To delete the files and figures generated from running the analysis, make a clean state:
 
     - For Windows operating systems:
         ```
