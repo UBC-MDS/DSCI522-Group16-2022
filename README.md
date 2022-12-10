@@ -76,6 +76,8 @@ Also there are lots of null value, thus will will drop the rows with null values
 
 To replicate the analysis, first to clone this GitHub repository along with installing the dependencies using the [environment yaml file](/environment.yml)
 
+**Note**: To fully reproduce the entire analysis, it takes around 1 hours to run.
+
 ### Method 1: To reproduce the analysis follow the commands below in the project root directory:
 
 ``` bash
@@ -121,6 +123,46 @@ make clean
 docker pull tanmayagarwal/data-science-salary-predictor 
 ```
 
+
+### Method 3: Using Dockerfile
+
+To reprocude the full analysis, it need to install Docker and clone this repository to your local machine.
+
+Then run the following commands in a Tterminal from the root directory of the project:
+
+1. Pull the docker image from DockerHub:
+  ```
+  docker pull tanmayagarwal/data-science-salary-predictor
+  ```
+2. Run Makefile `make all` with the Docker image:
+
+    - For Windows operating systems:
+        ```
+        docker run --rm -v  "/$(pwd)://home" tanmayagarwal/data-science-salary-predictor make -C //home all
+        ```
+    - For Mac M1 or M2 operating systems:
+        ```
+        docker run  --rm  -v  “$PWD”:/home tanmayagarwal/data-science-salary-predictor make -C /home all
+        ```
+        **Note**: Try add `--platform linux/amd64` as an optional flag to the command above if not working
+
+3. Run Makefile `make clean` with Docker image. To delete the files and figures generated from running the analysis, make a clean state:
+
+    - For Windows operating systems:
+        ```
+        docker run --rm -v  "/$(pwd)://home" tanmayagarwal/data-science-salary-predictor make -C //home clean
+        ```
+    - For Mac M1 or M2 operating systems:
+        ```
+        docker run  --rm -v  “$PWD”:/home tanmayagarwal/data-science-salary-predictor make -C /home clean
+        ```
+        **Note**: Try add `--platform linux/amd64` as an optional flag to the command above if not working
+
+
+## Makefile dependency diagram
+**Note**: Please click on the image to view the image in original size._
+
+<img src="img/Makefile.png">
 
 ## Licenses
 
