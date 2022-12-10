@@ -4,11 +4,11 @@ author: "UBC MDS Cohort 7 DSCI522 Team 16 - Chen Lin, Jonah Hamilton, Mike Guron
   Tanmay Agarwal"
 date: "11/26/2022"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     toc: yes
     df_print: paged
-  pdf_document:
-    toc: yes
 header-includes: \usepackage[labelformat=empty]{caption}
 bibliography: references.bib
 ---
@@ -166,7 +166,7 @@ We also examined the correlation between a few numeric features of interest incl
 ```{r fig.align='center'}
 kable(read.csv("results/correlation_table.csv"),
       caption = "**Table 1.** Correlation Matrix of Key Numeric Features") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
+  kable_styling(full_width = F, font_size = 12) %>%
   kable_classic_2(full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
@@ -185,10 +185,32 @@ The following models were used for evaluation through cross validation by using 
 
 The result decision was based on the mean R2 score from the cross validation. The result can be see below:
 
-```{r fig.align='center'}
-kable(read.csv("results/model_accuracies.csv"),
+```{r fig.align='left'}
+dat_ma <- data.frame(read.csv("results/model_accuracies.csv")) %>%
+  select(-c(X))
+
+rownames(dat_ma) <- c(" ",
+              "Fit Time",
+              "Score Time",
+              "Test Neg MAPE",
+              "Train Neg MAPE",
+              "Test R2",
+              "Train R2")
+              
+colnames(dat_ma) <- c("Dummy",
+                      "Dummy",
+                      "KNN",
+                      "KNN",
+                      "Ridge",
+                      "Ridge",
+                      "Random Forest",
+                      "Random Forest",
+                      "Lasso",
+                      "Lasso")
+
+kable(dat_ma,
       caption = "Table 2. Cross Validation results for different models") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
+  kable_styling(full_width = F, font_size = 8) %>%
   kable_classic_2(full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
@@ -200,9 +222,17 @@ And the RandomForestRegressor gives the highest R2 validation score of around 0.
 By using Ridge we are able to select 105 features, but the cross-validation accuracy reduces to about 0.27.
 
 ```{r fig.align='center'}
-kable(read.csv("results/rf_result_with_feature_selection.csv"),
+dat_rf <- data.frame(read.csv("results/rf_result_with_feature_selection.csv")) %>%
+  select(-c(X))
+
+colnames(dat_rf) <- c("Fit Time",
+                      "Score Time",
+                      "Test Score",
+                      "Train Score")
+
+kable(dat_rf,
       caption = "Table 3. Cross Validation results for random forest with selected features") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
+  kable_styling(full_width = F, font_size = 12) %>%
   kable_classic_2(full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
@@ -212,17 +242,29 @@ kable(read.csv("results/rf_result_with_feature_selection.csv"),
 By using the RandomizedSearchCV, the best model is selection based on best score and best parameters as below:
 
 ```{r fig.align='center'}
-kable(read.csv("results/best_params.csv"),
+dat_bp <- data.frame(read.csv("results/best_params.csv")) %>%
+  select(-c(X))
+
+colnames(dat_bp) <- c("Max Features",
+                      "Max Depth",
+                      "Bootstrap")
+
+kable(dat_bp,
       caption = "Table 4. Best Parameters for random forest") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
+  kable_styling(full_width = F, font_size = 12) %>%
   kable_classic_2(full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
 
 ```{r fig.align='center'}
-kable(read.csv("results/validation_score.csv"),
+dat_vs <- data.frame(read.csv("results/validation_score.csv")) %>%
+  select(-c(X))
+
+colnames(dat_vs) <- c("Best Random Forest Train Score")
+
+kable(dat_vs,
       caption = "Table 5. Validation score for random forest") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
+  kable_styling(full_width = F, font_size = 12) %>%
   kable_classic_2(full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
@@ -234,9 +276,14 @@ As we can see, there is an improvement of about 1% in the R2.
 By using the best model with the best hyperparameter as mentioned above, the model score against the test data is shown in Table 6
 
 ```{r fig.align='center'}
-kable(read.csv("results/test_score.csv"),
+dat_ts <- data.frame(read.csv("results/test_score.csv")) %>%
+  select(-c(X))
+
+colnames(dat_ts) <- c("Best Random Forest Test Score")
+
+kable(dat_ts,
       caption = "Table 6. Test Score") %>%
-  kable_styling(full_width = F, font_size = 10) %>%
+  kable_styling(full_width = F, font_size = 12) %>%
   kable_classic_2(full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
