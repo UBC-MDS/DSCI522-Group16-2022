@@ -117,12 +117,6 @@ To reset the project with cleaning file path/directory, without any intermeidate
 ```
 make clean
 ```
-### Method 3: Docker Usage
-
-```
-docker pull tanmayagarwal/data-science-salary-predictor 
-```
-
 
 ### Method 3: Using Dockerfile
 
