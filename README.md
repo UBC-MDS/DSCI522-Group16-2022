@@ -116,6 +116,11 @@ To reset the project with cleaning file path/directory, without any intermeidate
 make clean
 ```
 
+## Makefile dependency diagram
+**Note**: Please click on the image to view the image in original size._
+
+<img src="Makefile.png">
+
 ## Licenses
 
 The Data Science Salary Predictor materials here are licensed under the Creative Commons Attribution 4.0 International License and the MIT License.  Please provide attribution and a link to this webpage if re-using/re-mixing any of these materials.
